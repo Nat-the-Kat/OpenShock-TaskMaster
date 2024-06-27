@@ -7,7 +7,7 @@ Have trouble waking up at a "reasonable" time everyday? This project can help wi
 Want to get better at staying hydrated while you spend hours at a time gaming everyday? This project can also help with that.
 
 ## **Setting up the dev environment**
-Please refer to [this](https://arduino-pico.readthedocs.io/en/latest/platformio.html)
+Please refer to [this](https://arduino-pico.readthedocs.io/en/latest/platformio.html).
 
 ## **Getting started**
 please see [this](docs/getting%20started.md) for info on getting started.
