@@ -7,7 +7,7 @@ Have trouble waking up at a "reasonable" time everyday? this project can help wi
 Want to get better at staying hydrated while you spend hours at a time gaming everyday? this project can also help with that.
 
 ## **Getting started**
-please see [this] for info on getting started.
+please see [this](docs/getting%20started.md) for info on getting started.
 
 ## **Future plans for this project**
 
