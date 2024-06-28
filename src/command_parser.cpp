@@ -1,18 +1,10 @@
 #include "command_parser.h"
 #include <tod.h>
 
-
-  int64_t task_master::alarm_test(alarm_id_t id, void* userdata){
-    Serial.println("alarm!!!");
-    return 0;
-  }
-//using namespace task_master;
 //very simple serial command parser to allow modifying the configuration
 
 //this file is an unholy mess, it desperately needs cleanup. there is almost certainly a way better way to do this.
   void task_master::parse_serial(task_manager* manager, config* conf, wifi_manager* w_manager){
-
-
     char input[100] = "\n";
     int index = 0;
     while(Serial.available() > 0 && index < sizeof(input) - 1){
@@ -56,8 +48,6 @@
       Serial.println("v0.00");
 
     }else if(strncmp(input, "test", 4) == 0){
-      add_alarm_in_ms(2000,alarm_test, NULL,false);
-      Serial.println("alarm set!");
 
 
     }else if(strncmp(input, "write_tasks", 11) == 0){
@@ -120,12 +110,9 @@
 
     }else{
       Serial.println("Unknown command, try help to see valid commands.");
-
     }
     return;
   }
-
-
 
   //this is a kinda gross way to do this, but it works soooo.....
   void task_master::help(const char* string){ 
@@ -144,10 +131,10 @@
       Serial.println("add_tasks               add a new task (or tasks) to the list in ram, using json to define the task(s)");
     }else if(strncmp(string, " config", 7) == 0){
       Serial.println("configuration commands:");
-      Serial.println("write_conf              write configuration in ram to config.json.");
-      Serial.println("read_conf               reads config.json into ram.");
-      Serial.println("view_conf               prints out the current configuration stored in ram.");
-      Serial.println("edit_conf               edit configuration in ram, using json to specify values.");
+      Serial.println("write_config            write configuration in ram to config.json.");
+      Serial.println("read_config             reads config.json into ram.");
+      Serial.println("view_config             prints out the current configuration stored in ram.");
+      Serial.println("edit_config             edit configuration in ram, using json to specify values.");
     }else if(strncmp(string, " wifi", 5) == 0){
       Serial.println("wifi commands:");
       Serial.println("write_networks          write netork list in ram to wifi.json.");

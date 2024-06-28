@@ -9,7 +9,5 @@ namespace task_master {
   void parse_serial(task_manager* manager, config* conf, wifi_manager* w_manager);
 
   void help(const char* string);
-
-  int64_t alarm_test(alarm_id_t id, void *userdata);
 }
 
