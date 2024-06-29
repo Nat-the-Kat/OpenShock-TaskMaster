@@ -1,20 +1,11 @@
 #include "task_manager/task_manager.h"
 #include "debug/bp.h"
 using namespace task_master;
-
-  //create a new tasks.json, with a dummy task in it
-  void task_manager::create_tasks_json(){
-    clear_tasks();
-    task* t = new task;
-    task_list.push_back(t);
-    write_to_file();
-  }
-    
+ 
   void task_manager::init(){
     File tasks_file = LittleFS.open("tasks.json", "r");
     if(!tasks_file){
-      Serial.println("no task list detected! creating new tasks.json");
-      create_tasks_json();
+      Serial.println("no task list detected! please create one with add_tasks!");
     }
     read_from_file();
   }

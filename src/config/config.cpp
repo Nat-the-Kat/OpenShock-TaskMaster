@@ -7,7 +7,7 @@
     File config_file = LittleFS.open("config.json", "r");
 
     if(!config_file){
-      Serial.println("no config detected! creating new config.json");
+      Serial.println("no config detected! creating new default config.json");
       write_to_file();
       first_boot = true; //if there is no config file, assume this is the first boot
     }else{

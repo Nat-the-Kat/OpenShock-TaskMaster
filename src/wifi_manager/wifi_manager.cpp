@@ -8,8 +8,7 @@ using namespace task_master;
     clear_networks();
     File wifi_file = LittleFS.open("wifi.json", "r");
     if(!wifi_file){
-      Serial.println("no wifi list detected! creating new wifi.json");
-      write_to_file();
+      Serial.println("no wifi list detected! please create one with add_networks!");
     }
     read_from_file();
   }
