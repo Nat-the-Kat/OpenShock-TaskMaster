@@ -13,12 +13,12 @@ namespace task_master{
       std::string api_key = "api_key";
       std::string shocker = "shocker";
       tod reset_time; //time that the override resets at
-      int reset_day;
+      int reset_day = 0;
       bool can_override = true; //is there a master override?
       int override_pin = 0; //gpio pin used to signal that the user wants to override the days tasks
       int num_overrides = 0; //number of times daily tasks can be overridden per week
       int overrides_left = 0; //how many overrides are left for the week
-      int dow;
+      int dow = 0;
 
       int message_time = 5;
       
@@ -31,8 +31,6 @@ namespace task_master{
       
     private:
       bool first_boot;
-      void create_config_json();
-
   };
 }
 

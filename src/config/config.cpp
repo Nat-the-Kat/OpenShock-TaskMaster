@@ -1,18 +1,6 @@
 #include "config/config.h"
 
   using namespace task_master;
-  
-  //create a basic config file pretty sure i could just call write_to_file.....
-  void config::create_config_json(){
-    ntp_server = "pool.ntp.org";
-    api_key = "api_key";
-    shocker = "shocker";
-    can_override = true;
-    override_pin = 1;
-    num_overrides = 1;
-    message_time = 5;
-    write_to_file();
-  }
 
   //check if config.json exists, if not, create a default config
   void config::init(){
@@ -20,7 +8,7 @@
 
     if(!config_file){
       Serial.println("no config detected! creating new config.json");
-      create_config_json();
+      write_to_file();
     }else{
       config_file.close();
     }
