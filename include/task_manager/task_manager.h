@@ -26,7 +26,6 @@
         void clear_tasks();
         void delete_task(const char* task_name);
         void add_tasks();
-        void add_task(JsonObject object);
 
         //this one function does all the complicated stuff that i put off until the end.
         //turns outs it wasn't that complicated at all
@@ -36,8 +35,9 @@
       private:
         tod* clear_time = nullptr;
         std::vector <task*> task_list;
-        static void alarm(void);
+        void read_from_stream(Stream &s);
         void create_tasks_json();
+        void add_task(JsonObject object);
 
     };
   }

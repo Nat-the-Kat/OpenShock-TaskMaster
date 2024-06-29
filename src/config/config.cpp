@@ -9,6 +9,7 @@
     if(!config_file){
       Serial.println("no config detected! creating new config.json");
       write_to_file();
+      first_boot = true; //if there is no config file, assume this is the first boot
     }else{
       config_file.close();
     }
@@ -46,38 +47,9 @@
   }
 
   void config::read_from_file(){
-    JsonDocument config_doc;
-
     File config_file = LittleFS.open("config.json", "r");
-    DeserializationError error = deserializeJson(config_doc, config_file);
+    read_from_stream(config_file);
     config_file.close();
-    if(error){
-      Serial.print("deserializeJson() failed: ");
-      Serial.println(error.c_str());
-      Serial.println("config not updated!");
-      return;
-    }
-
-    JsonObject config = config_doc["config"];
-    ntp_server = std::string(config["ntp_server"]);
-    api_key = std::string(config["api_key"]);
-    shocker = std::string(config["shocker"]);
-    can_override = config["can_override"];
-
-    if(can_override){
-      override_pin = config["override_pin"];
-      num_overrides = config["num_overrides"];
-      reset_day = config["reset_day"];
-    }
-
-    message_time = config["message_time"];
-    overrides_left = num_overrides;
-
-    JsonArray config_reset_time = config["reset_time"];
-    reset_time = tod(config_reset_time);
-    
-    JsonArray config_timezone = config["timezone"];
-    timezone = tod(config_timezone);
   }
 
   void config::print(){
@@ -101,8 +73,12 @@
     Serial.println();
     Serial.println("waiting for json string...");
     while(!Serial.available());
+    read_from_stream(Serial);
+  }
+  
+  void config::read_from_stream(Stream &s){
     JsonDocument doc;
-    DeserializationError error = deserializeJson(doc, Serial);
+    DeserializationError error = deserializeJson(doc, s);
     if(error){
       Serial.print("deserializeJson() failed: ");
       Serial.println(error.c_str());
@@ -126,8 +102,6 @@
       reset_time = tod(config_reset_time);
       JsonArray config_timezone = config["timezone"];
       timezone = tod(config_timezone);
-      Serial.println("config updated!");
     }
   }
-  
 

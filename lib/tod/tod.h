@@ -6,9 +6,9 @@
   //oh well, sunk cost and all that... 
   class tod{
     public:
-    int hr = 0;
-    int min = 0;
-    int sec = 0;
+    int8_t hr = 0;
+    int8_t min = 0;
+    int8_t sec = 0;
 
     void print();
     JsonDocument to_json();

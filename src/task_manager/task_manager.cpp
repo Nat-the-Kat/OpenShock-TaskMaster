@@ -32,38 +32,23 @@ using namespace task_master;
   void task_manager::read_from_file(){
     clear_tasks();
     File task_file = LittleFS.open("tasks.json","r");
-    JsonDocument doc;
-
-    DeserializationError error = deserializeJson(doc, task_file);
+    read_from_stream(task_file);
     task_file.close();
-    if(error){
-      Serial.print("deserializeJson() failed: ");
-      Serial.println(error.c_str());
-      return;
-    }
-
-    for(JsonObject task_json : doc["tasks"].as<JsonArray>()){
-      task* t = new task(task_json);
-      task_list.push_back(t);
-    }
-    doc.clear();
   }
 
   void task_manager::write_to_file(){
-
-    File tasks_file = LittleFS.open("tasks.json","w");
+    File task_file = LittleFS.open("tasks.json","w");
 
     JsonDocument doc;
     JsonArray tasks = doc["tasks"].to<JsonArray>();
-
 
     for(task* current_task: task_list){
       doc["tasks"].add(current_task->to_json());
     }
 
     doc.shrinkToFit();
-    serializeJson(doc, tasks_file);
-    tasks_file.close();
+    serializeJson(doc, task_file);
+    task_file.close();
   }
 
   void task_manager::delete_task(const char* task_name){
@@ -83,18 +68,8 @@ using namespace task_master;
     Serial.println();
     Serial.println("waiting for json string...");
     while(!Serial.available());
-    JsonDocument doc;
-    DeserializationError error = deserializeJson(doc, Serial);
-    if(error){
-      Serial.print("deserializeJson() failed: ");
-      Serial.println(error.c_str());
-      return;
-    }else{
-      for (JsonObject task_json : doc["tasks"].as<JsonArray>()) {
-        add_task(task_json);
-      }
-      Serial.println("task(s) added!");
-    }    
+    read_from_stream(Serial);
+    Serial.println("task(s) added!");   
   }
 
   void task_manager::add_task(JsonObject object){
@@ -156,4 +131,18 @@ using namespace task_master;
         }
       }
     }
+  }
+
+  void task_manager::read_from_stream(Stream &s){
+    JsonDocument doc;
+    DeserializationError error = deserializeJson(doc, s);
+    if(error){
+      Serial.print("deserializeJson() failed: ");
+      Serial.println(error.c_str());
+      return;
+    }else{
+      for (JsonObject task_json : doc["tasks"].as<JsonArray>()) {
+        add_task(task_json);
+      }
+    } 
   }

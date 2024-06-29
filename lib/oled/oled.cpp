@@ -14,7 +14,10 @@
     Wire.endTransmission();
   }
 
-  void ssd1306::init(uint8_t a){
+  void ssd1306::init(int sda, int scl, uint8_t a){
+    Wire.setSDA(20);
+    Wire.setSCL(21);
+    Wire.begin();
     address= a;
     write_command(0xae);  //display off
     write_command(0xd5);  //set osc frequency

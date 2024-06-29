@@ -9,7 +9,7 @@
 class ssd1306 {
   public:
 
-    void init(uint8_t a = 0x3c);
+    void init(int sda, int scl, uint8_t a = 0x3c);
     void clear();
     void timed_clear(int ms);
     void load_font(const uint8_t* font);

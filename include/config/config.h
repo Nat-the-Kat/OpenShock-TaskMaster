@@ -19,9 +19,9 @@ namespace task_master{
       int num_overrides = 0; //number of times daily tasks can be overridden per week
       int overrides_left = 0; //how many overrides are left for the week
       int dow = 0;
-
       int message_time = 5;
       
+      bool first_boot = false;
 
       void read_from_file(); //read config.json into ram
       void write_to_file(); //write config in ram to config.json
@@ -30,7 +30,7 @@ namespace task_master{
       void init();
       
     private:
-      bool first_boot;
+      void read_from_stream(Stream &s);
   };
 }
 

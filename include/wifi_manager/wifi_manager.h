@@ -13,7 +13,6 @@ namespace task_master{
       void write_to_file(); //write config in ram to wifi.json
 
       //wifi management functions
-
       void add_network(JsonObject object);
       void add_networks();
       void delete_network(const char* ssid);
@@ -22,7 +21,6 @@ namespace task_master{
       bool search_for_network();
     private:
       std::vector <wifi_config> wifi_configs;
-      void add_network(const char* ssid, const char* password); //only called to initialize wifi.json
-      void create_wifi_json();
+      void read_from_stream(Stream &s);
   };
 }

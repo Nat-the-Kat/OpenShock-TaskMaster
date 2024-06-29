@@ -18,10 +18,14 @@ using namespace task_master;
 
   void setup() {
     Serial.begin(115200);
-    //while (!Serial);
+    oled.init(20,21);
+    oled.clear();
+    oled.set_frame_callback(250,&frame_callback);
+    while (!Serial);
 
     if(!LittleFS.begin()){
-      Serial.println("Failed to mount file system, rebooting...");
+      oled.cursor_pos(3,0);
+      oled.write_string_8("Failed to mount file system, rebooting...");
       delay(2000);
       rp2040.reboot();
     }
@@ -75,17 +79,8 @@ using namespace task_master;
 
   }
 
-  /*do i actually need to use the second core? no i don't. but the oled would freeze while anything was happening on the
-  serial port and i didn't like how it looked. :P
-  */
-
   void setup1(){
-    Wire.setSDA(20);
-    Wire.setSCL(21);
-    Wire.begin();
-    oled.init();
-    oled.clear();
-    oled.set_frame_callback(250,&frame_callback);
+
   }
 
   void loop1() {
