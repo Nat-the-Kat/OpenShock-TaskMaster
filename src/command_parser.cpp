@@ -108,6 +108,8 @@
       manager->init();
       w_manager->init();
 
+    }else if(strncmp(input, "ip_address", 10) == 0){
+      w_manager->clear_networks();
     }else{
       Serial.println("Unknown command, try help to see valid commands.");
     }

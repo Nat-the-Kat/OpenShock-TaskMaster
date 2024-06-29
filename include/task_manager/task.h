@@ -1,7 +1,7 @@
 #pragma once
 #include <tod.h>
-#include "control.h"
-#include "oscontrol.h"
+#include <openshock.h>
+#include "config/config.h"
 #include <oled.h>
 #include <pico/stdlib.h>
 
@@ -14,11 +14,11 @@ namespace task_master{
 
       bool can_warn = false; //does this task give a warning?
       tod warn_time;
-      control warning;
+      openshock::control warning;
 
       bool can_punish = false; //is there a punishment assinged to this task?
       tod punish_time;
-      control punish;
+      openshock::control punish;
 
       bool can_reward = false;
       std::string reward_message = "reward_message"; //message to display on screen if the task is completed on time.

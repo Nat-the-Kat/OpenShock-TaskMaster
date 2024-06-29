@@ -1,11 +1,11 @@
 #pragma once
 #include <LittleFS.h>
 #include <ArduinoJson.h>
+#include <openshock.h>
 #include "task.h"
 #include "task_repeating.h"
 #include "task_timed.h"
 #include "config/config.h"
-#include "oscontrol.h"
 #include <Vector>
 #include <hardware/rtc.h>
 #include <pico/stdlib.h>

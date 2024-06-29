@@ -68,14 +68,14 @@ using namespace task_master;
       JsonArray punish_array = object["punish_time"];
       punish_time = tod(punish_array);
       JsonObject task_punish = object["punishment"];
-      punish = control(task_punish);
+      punish = openshock::control(task_punish);
     }
 
     if(can_warn){
       JsonArray warn_array = object["warn_time"];
       warn_time = tod(warn_array);
       JsonObject task_warn = object["warning"];
-      warning = control(task_warn);
+      warning = openshock::control(task_warn);
     }
 
     if(can_reward) {
@@ -102,14 +102,14 @@ using namespace task_master;
       oled.load_font(font8);
       oled.cursor_pos(3,0);
       oled.write_string_8(warning.message);
-      control_request(conf, punish);
+      control_request(conf->os_config, punish);
       active = false; //assume that if there was a warning, it came before the punishment
       oled.timed_clear(conf->message_time*1000);
     }else if(can_warn && warn_time == current_time){ //if still active and its time and this task gives a warning, zap!
       oled.load_font(font8);
       oled.cursor_pos(3,0);
       oled.write_string_8(warning.message);
-      control_request(conf, warning);
+      control_request(conf->os_config, warning);
       if(!can_punish) active = false; //if there is no punishment, then this task is done
       oled.timed_clear(conf->message_time*1000);
     }

@@ -27,8 +27,7 @@
     JsonDocument doc;
     JsonObject config = doc["config"].to<JsonObject>();
     config["ntp_server"] = ntp_server;
-    config["api_key"] = api_key;
-    config["shocker"]  = shocker;
+    config["os_config"] = os_config.to_json();
     config["can_override"] = can_override;
 
     if(can_override){
@@ -53,9 +52,11 @@
   }
 
   void config::print(){
-    char buffer[256];
-    sprintf(buffer, "ntp_server: %s\napi_key: %s\nshocker: %s", ntp_server.c_str(), api_key.c_str(), shocker.c_str());
+    char buffer[64];
+    sprintf(buffer, "ntp_server: %s", ntp_server.c_str());
     Serial.println(buffer);
+    Serial.println("os_config:");
+    os_config.print();
     Serial.print("can_override: ");Serial.println(can_override);
     if(can_override){
       char b[128];
@@ -86,8 +87,8 @@
     }else{
       JsonObject config = doc["config"];
       ntp_server = std::string(config["ntp_server"]);
-      api_key = std::string(config["api_key"]);
-      shocker = std::string(config["shocker"]);
+      JsonObject osconfig = config["os_config"];
+      os_config = openshock::config(osconfig);
       can_override = config["can_override"];
       if(can_override){
         override_pin = config["override_pin"];

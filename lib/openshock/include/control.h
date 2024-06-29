@@ -1,12 +1,12 @@
 #pragma once
 #include <ArduinoJson.h>
 
-namespace task_master{
+namespace openshock{
   class control{
     public:
-      int strength = 0;
+      int intensity = 0;
       std::string type = "type";
-      int dur = 0;
+      int duration = 0;
       std::string message = "message";
 
 

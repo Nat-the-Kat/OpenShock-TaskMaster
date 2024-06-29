@@ -1,6 +1,7 @@
 #pragma once
 #include <LittleFS.h>
 #include <ArduinoJson.h>
+#include <openshock.h>
 #include <tod.h>
 #include <string>
 
@@ -10,8 +11,8 @@ namespace task_master{
   class config{
     public:
       std::string ntp_server = "pool.ntp.org";
-      std::string api_key = "api_key";
-      std::string shocker = "shocker";
+      openshock::config os_config;
+
       tod reset_time; //time that the override resets at
       int reset_day = 0;
       bool can_override = true; //is there a master override?
