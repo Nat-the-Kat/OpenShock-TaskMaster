@@ -11,10 +11,9 @@ using namespace task_master;
   task_manager* manager = new task_manager;
   wifi_manager* w_manager = new wifi_manager;
 
-  bool wifi = true;
-
   bool frame_callback(repeating_timer* t);
 
+  bool wifi = false;
 
   void setup() {
     Serial.begin(115200);
@@ -62,10 +61,13 @@ using namespace task_master;
   }
 
   void loop() {
-    if (Serial.available() > 0) {
+    if(Serial.available() > 0) {
       parse_serial(manager, conf, w_manager);
     }
-    if(wifi){
+    if(wifi){ 
+      /*if we have a wifi connection, check to make sure we are still connected, then if true, check tasks, other wise don't bother as we cannot act
+      if a task is requesting a shock because we cannot send the request.
+      */
       if(WiFi.status() != WL_CONNECTED){
         Serial.println("wifi disconnected, searching for known networks...");
         while(!w_manager->search_for_network());
@@ -73,8 +75,11 @@ using namespace task_master;
         Serial.println(WiFi.localIP());
         NTP.begin(conf->ntp_server.c_str());
         NTP.waitSet();
+      }else{
+        //we have wifi, so check tasks
+        manager->check_tasks(conf);
       }
-      manager->check_tasks(conf);
+      
     }
 
   }

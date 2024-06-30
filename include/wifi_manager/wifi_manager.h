@@ -24,3 +24,5 @@ namespace task_master{
       void read_from_stream(Stream &s);
   };
 }
+
+

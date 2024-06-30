@@ -109,11 +109,15 @@
       w_manager->init();
 
     }else if(strncmp(input, "ip_address", 10) == 0){
-      w_manager->clear_networks();
+      if(WiFi.status() != WL_CONNECTED){
+        Serial.println("wifi is not connected, check the network config!");
+      }else{ //we have wifi
+        Serial.print("local ip address: ");Serial.println(WiFi.localIP());
+      }
+
     }else{
       Serial.println("Unknown command, try help to see valid commands.");
     }
-    return;
   }
 
   //this is a kinda gross way to do this, but it works soooo.....
@@ -144,6 +148,7 @@
       Serial.println("view_networks           prints out the current network list stored in ram.");
       Serial.println("delete_network ssid     remove wifi network specified from network list in ram.");
       Serial.println("add_networks            add a new network(s) to the list in ram, using json to define the wifi credentials");
+      Serial.println("ip_address              prints local ip address (if wifi is connected).");
     }else if(strncmp(string, " misc", 5) == 0){
       Serial.println("misc commands:");
       Serial.println("factory_reset           delete config.json,tasks.json and wifi.json, and create new ones with default values\n");
