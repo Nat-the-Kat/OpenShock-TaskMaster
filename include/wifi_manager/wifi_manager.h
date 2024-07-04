@@ -22,6 +22,7 @@ namespace task_master{
     private:
       std::vector <wifi_config> wifi_configs;
       void read_from_stream(Stream &s);
+      void write_to_stream(Stream &s);
   };
 }
 

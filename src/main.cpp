@@ -4,6 +4,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include "debug/bp.h"
+#include "web_server/web_server.h"
 
 using namespace task_master;
 
@@ -20,7 +21,9 @@ using namespace task_master;
     oled.init(20,21);
     oled.clear();
     oled.set_frame_callback(250,&frame_callback);
-    while (!Serial);
+    //while (!Serial);
+    pinMode(LED_BUILTIN,OUTPUT);
+    digitalWrite(LED_BUILTIN,LOW);
 
     if(!LittleFS.begin()){
       oled.cursor_pos(3,0);
@@ -54,10 +57,12 @@ using namespace task_master;
 
       NTP.begin(conf->ntp_server.c_str());
       NTP.waitSet();
+
     }
+      web_server::init();
 
     Serial.println("Ready to receive commands...");
-    
+    digitalWrite(LED_BUILTIN,HIGH);
   }
 
   void loop() {
@@ -78,10 +83,11 @@ using namespace task_master;
       }else{
         //we have wifi, so check tasks
         manager->check_tasks(conf);
+
       }
       
     }
-
+    web_server::server.handleClient();
   }
 
   void setup1(){

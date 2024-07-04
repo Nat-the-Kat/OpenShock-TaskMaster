@@ -32,6 +32,7 @@ namespace task_master{
       
     private:
       void read_from_stream(Stream &s);
+      void write_to_stream(Stream &s);
   };
 }
 

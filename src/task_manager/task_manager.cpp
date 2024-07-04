@@ -29,16 +29,7 @@ using namespace task_master;
 
   void task_manager::write_to_file(){
     File task_file = LittleFS.open("tasks.json","w");
-
-    JsonDocument doc;
-    JsonArray tasks = doc["tasks"].to<JsonArray>();
-
-    for(task* current_task: task_list){
-      doc["tasks"].add(current_task->to_json());
-    }
-
-    doc.shrinkToFit();
-    serializeJson(doc, task_file);
+    write_to_stream(task_file);
     task_file.close();
   }
 
@@ -136,4 +127,16 @@ using namespace task_master;
         add_task(task_json);
       }
     } 
+  }
+
+  void task_manager::write_to_stream(Stream& s){
+    JsonDocument doc;
+    JsonArray tasks = doc["tasks"].to<JsonArray>();
+
+    for(task* current_task: task_list){
+      doc["tasks"].add(current_task->to_json());
+    }
+
+    doc.shrinkToFit();
+    serializeJson(doc, s);
   }

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TaskMaster config panel</title>
+  </head>
+  <body>
+    <nav>
+      <a href="index.html">index</a>
+      <a href="config.html">configuration</a>
+      <a href="tasks.html">task list</a>
+      <a href="networks.html">wifi list</a>
+    </nav>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+    <script src="./scripts/jquery-3.3.1.min.js"></script>
+    <script src="./scripts/config_script.js"></script>
+    <h1>Config panel</h1>
+    <input type="button" id="from_ram" onclick="load_from_ram()" value="show config in ram">
+    <input type="button" id="from_flash" onclick="load_from_flash()" value="show config in flash"> <br> <br>
+    <table id="config_table" border="1 px">
+    </table>
+    <br>
+    <br>
+    <table id="os_config_table" border="1 px">
+    </table>
+  </body>
+</html>

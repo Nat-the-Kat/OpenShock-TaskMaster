@@ -36,6 +36,7 @@
         tod* clear_time = nullptr;
         std::vector <task*> task_list;
         void read_from_stream(Stream &s);
+        void write_to_stream(Stream &s);
         void add_task(JsonObject object);
     };
   }
