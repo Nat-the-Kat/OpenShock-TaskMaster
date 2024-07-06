@@ -1,7 +1,6 @@
 #pragma once
 #include <tod.h>
 #include <openshock.h>
-#include "config/config.h"
 #include <oled.h>
 #include <pico/stdlib.h>
 
@@ -27,7 +26,7 @@ namespace task_master{
 
       virtual void print();
       virtual JsonDocument to_json();
-      virtual void check(config* conf);
+      virtual void check();
       
 
       task();

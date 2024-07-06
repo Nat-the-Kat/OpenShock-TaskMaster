@@ -1,5 +1,12 @@
+#include <LittleFS.h>
+#include <pico/stdlib.h>
+#include <pico/util/datetime.h>
+#include <openshock.h>
 #include "task_manager/task_manager.h"
-#include "debug/bp.h"
+#include "task_manager/task_repeating.h"
+#include "task_manager/task_timed.h"
+#include "config/config.h"
+
 using namespace task_master;
  
   void task_manager::init(){
@@ -29,7 +36,8 @@ using namespace task_master;
 
   void task_manager::write_to_file(){
     File task_file = LittleFS.open("tasks.json","w");
-    write_to_stream(task_file);
+    std::string temp = write_to_string();
+    task_file.write(temp.c_str(),temp.size());
     task_file.close();
   }
 
@@ -71,44 +79,41 @@ using namespace task_master;
     task_list.push_back(t);
   }
 
-
-
-  void task_manager::check_tasks(config* conf){
-
+  void task_manager::check_tasks(){
     //check if any task needs updating
     for(task* t: task_list){
       if(t->active){
-        t->check(conf);
+        t->check();
       }
     }
     //check if its reset time
-    if(current_time == conf->reset_time){
+    if(current_time == conf.reset_time){
       //update day of week
       tm temp;
       time_t now = time(nullptr); 
       localtime_r(&now, &temp); //this seems wasteful...
-      conf->dow = temp.tm_wday;
+      conf.dow = temp.tm_wday;
 
       //its reset_day, reset overrides (if enabled)
-      if(conf->dow == conf->reset_day && conf->can_override){
+      if(conf.dow == conf.reset_day && conf.can_override){
 
-        conf->overrides_left = conf->num_overrides;
+        conf.overrides_left = conf.num_overrides;
       }
       //reactivate all tasks
       for(task* t: task_list){
         t->active = true;
       }
     }
-    if(conf->can_override){
-      if(digitalRead(conf->override_pin) && conf->overrides_left != 0){
+    if(conf.can_override){
+      if(digitalRead(conf.override_pin) && conf.overrides_left != 0){
         delay(500);  //really dumb software debounce
-        if(digitalRead(conf->override_pin)){ //if still high, deactivate task
+        if(digitalRead(conf.override_pin)){ //if still high, deactivate task
           //make sure that if we need to display text, the correct font is loaded, because if forgot the frame callback can happen in the middle of this and change the font
           oled.load_font(font8);
           oled.cursor_pos(3,0);
           oled.write_string_8("override used!");
-          oled.timed_clear(conf->message_time*1000);
-          conf->overrides_left--;
+          oled.timed_clear(conf.message_time*1000);
+          conf.overrides_left--;
 
         }
       }
@@ -129,7 +134,8 @@ using namespace task_master;
     } 
   }
 
-  void task_manager::write_to_stream(Stream& s){
+  std::string task_manager::write_to_string(){
+    std::string out;
     JsonDocument doc;
     JsonArray tasks = doc["tasks"].to<JsonArray>();
 
@@ -138,5 +144,8 @@ using namespace task_master;
     }
 
     doc.shrinkToFit();
-    serializeJson(doc, s);
+    serializeJson(doc, out);
+    return out;
   }
+
+  task_manager manager;

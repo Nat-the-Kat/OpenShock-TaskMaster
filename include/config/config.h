@@ -1,13 +1,10 @@
 #pragma once
-#include <LittleFS.h>
 #include <ArduinoJson.h>
 #include <openshock.h>
 #include <tod.h>
 #include <string>
 
-
 namespace task_master{
-  
   class config{
     public:
       std::string ntp_server = "pool.ntp.org";
@@ -30,10 +27,14 @@ namespace task_master{
       void edit_config();
       void init();
       
+      std::string write_to_string();
+
     private:
       void read_from_stream(Stream &s);
-      void write_to_stream(Stream &s);
+      
   };
 }
+
+extern task_master::config conf;
 
   

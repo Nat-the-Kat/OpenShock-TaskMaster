@@ -10,6 +10,19 @@
       <a href="tasks.html">task list</a>
       <a href="networks.html">wifi list</a>
     </nav>
+    <script src="/scripts/jquery-3.3.1.min.js"></script>
+    <script src="/scripts/network_script.js"></script>
     <h1>Network management panel</h1>
+    <input type="button" id="from_ram" onclick="load_from_ram()" value="show network list in ram">
+    <input type="button" id="from_flash" onclick="load_from_flash()" value="show network list in flash"> 
+    <br>
+    <br>
+    <table border="1 px">
+      <thead>
+        <tr><td>ssid</td><td>password</td></tr>
+      </thead>
+      <tbody id="network_table">
+      </tbody>
+    </table>
   </body>
 </html>

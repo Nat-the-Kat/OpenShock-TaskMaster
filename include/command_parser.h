@@ -1,13 +1,9 @@
 #pragma once
-#include "config/config.h"
-#include "wifi_manager/wifi_manager.h"
-#include "task_manager/task_manager.h"
-#include "helpers/filesystem.h"
-#include <pico/stdlib.h>
+#include <string>
 
 namespace task_master {
-  void parse_serial(task_manager* manager, config* conf, wifi_manager* w_manager);
+  void parse_serial();
 
-  void help(const char* string);
+  void help(std::string s);
 }
 

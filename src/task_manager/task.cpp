@@ -1,4 +1,5 @@
 #include "task_manager/task.h"
+#include "config/config.h"
 
 
 using namespace task_master;
@@ -32,13 +33,14 @@ using namespace task_master;
     doc["can_reward"] = can_reward;
 
     if(can_punish){
-      doc["punishment"]=punish.to_json();
       doc["punish_time"] = punish_time.to_json();
+      doc["punishment"]=punish.to_json();
+
     }
 
     if(can_warn){
-      doc["warning"] = warning.to_json();
       doc["warn_time"] = warn_time.to_json();
+      doc["warning"] = warning.to_json();
     }
 
     if(can_reward){
@@ -86,7 +88,7 @@ using namespace task_master;
     active = true;
   }
 
-  void task::check(config* conf){
+  void task::check(){
     if(digitalRead(gpio)){ //really dumb software debounce
       delay(50);
       if(digitalRead(gpio)){ //if still high, deactivate task
@@ -95,22 +97,22 @@ using namespace task_master;
           oled.load_font(font8);
           oled.cursor_pos(3,0);
           oled.write_string_8(reward_message);
-          oled.timed_clear(conf->message_time*1000);
+          oled.timed_clear(conf.message_time*1000);
         }
       }
     }else if(can_punish && punish_time == current_time){ //if still active and its time and failure is an option, zap!
       oled.load_font(font8);
       oled.cursor_pos(3,0);
       oled.write_string_8(warning.message);
-      control_request(conf->os_config, punish);
+      control_request(conf.os_config, punish);
       active = false; //assume that if there was a warning, it came before the punishment
-      oled.timed_clear(conf->message_time*1000);
+      oled.timed_clear(conf.message_time*1000);
     }else if(can_warn && warn_time == current_time){ //if still active and its time and this task gives a warning, zap!
       oled.load_font(font8);
       oled.cursor_pos(3,0);
       oled.write_string_8(warning.message);
-      control_request(conf->os_config, warning);
+      control_request(conf.os_config, warning);
       if(!can_punish) active = false; //if there is no punishment, then this task is done
-      oled.timed_clear(conf->message_time*1000);
+      oled.timed_clear(conf.message_time*1000);
     }
   }

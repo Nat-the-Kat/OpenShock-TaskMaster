@@ -1,6 +1,5 @@
 #include "task_manager/task_repeating.h"
-#include "debug/bp.h"
-
+#include "config/config.h"
 
 using namespace task_master;
 
@@ -39,15 +38,18 @@ using namespace task_master;
     doc["can_reward"] = can_reward;
 
     if(can_punish){
+      doc["punish_time"] = punish_time.to_json();
       doc["punishment"]=punish.to_json();
     }
 
     if(can_warn){
+      doc["warn_time"] = warn_time.to_json();
       doc["warning"]=warning.to_json();
     }
 
-    if(can_warn){
+    if(can_reward){
       doc["reward_message"] = reward_message.c_str();
+      
     }
 
     doc["gpio"] = gpio;
@@ -104,7 +106,7 @@ using namespace task_master;
   }
 
   //i realized im doing a lot of if(can_warn) and if(can_punish), seems inefficient. maybe there is a better way?
-  void task_repeat::check(config* conf){
+  void task_repeat::check(){
     if(current_time == next_time && current_time != end){ //its time to recalculate next_time
       if(next_time + interval > end){ //the next interval is the last
         next_time = end;
@@ -147,7 +149,7 @@ using namespace task_master;
           oled.load_font(font8);
           oled.cursor_pos(3,0);
           oled.write_string_8(reward_message);
-          oled.timed_clear(conf->message_time*1000);
+          oled.timed_clear(conf.message_time*1000);
         }
       }
     }
@@ -156,16 +158,16 @@ using namespace task_master;
       oled.load_font(font8);
       oled.cursor_pos(3,0);
       oled.write_string_8(punish.message);
-      control_request(conf->os_config, punish);
+      control_request(conf.os_config, punish);
       interval_active = false; //assume that if there was a warning, it came before the punishment
-      oled.timed_clear(conf->message_time*1000);
+      oled.timed_clear(conf.message_time*1000);
     }else if(can_warn && next_warn == current_time && interval_active){ //if this iteration is still active and its time and this task gives a warning, zap!
       oled.load_font(font8);
       oled.cursor_pos(3,0);
       oled.write_string_8(warning.message);
-      control_request(conf->os_config, warning);
+      control_request(conf.os_config, warning);
       if(!can_punish) interval_active = false; //if there is no punishment, then this task is done
-      oled.timed_clear(conf->message_time*1000);
+      oled.timed_clear(conf.message_time*1000);
     }
     
   }

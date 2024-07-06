@@ -18,7 +18,7 @@ namespace task_master{
       task_repeat(JsonObject object);
       virtual void print()override;
       virtual JsonDocument to_json()override;
-      virtual void check(config* conf)override;
+      virtual void check()override;
   };
 }
 

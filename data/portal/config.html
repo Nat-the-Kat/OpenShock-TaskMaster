@@ -10,17 +10,28 @@
       <a href="tasks.html">task list</a>
       <a href="networks.html">wifi list</a>
     </nav>
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
-    <script src="./scripts/jquery-3.3.1.min.js"></script>
-    <script src="./scripts/config_script.js"></script>
+    <script src="/scripts/jquery-3.3.1.min.js"></script>
+    <script src="/scripts/config_script.js"></script>
     <h1>Config panel</h1>
     <input type="button" id="from_ram" onclick="load_from_ram()" value="show config in ram">
-    <input type="button" id="from_flash" onclick="load_from_flash()" value="show config in flash"> <br> <br>
-    <table id="config_table" border="1 px">
+    <input type="button" id="from_flash" onclick="load_from_flash()" value="show config in flash"> 
+    <br>
+    <br>
+    <table border="1 px">
+      <thead>
+        <tr><td>ntp server</td><td>can override</td><td>override pin</td><td>number of overrides</td><td>reset day</td><td>message time</td><td>reset time</td><td>timezone</td></tr>
+      </thead>
+      <tbody id = "config_table">
+      </tbody>
     </table>
     <br>
     <br>
-    <table id="os_config_table" border="1 px">
+    <table border="1 px">
+      <thead>
+        <tr><td>OpenShock server</td><td>api key</td><td>shocker</td></tr>
+      </thead>
+      <tbody id="os_config_table">
+      </tbody>
     </table>
   </body>
 </html>

@@ -1,6 +1,7 @@
-  
 #include "wifi_manager/wifi_manager.h"
-#include "debug/bp.h"
+#include <WiFi.h>
+#include <LittleFS.h>
+
 
 using namespace task_master;
   //check if wifi.json exists, if not, create a bare bones wifi config
@@ -16,17 +17,8 @@ using namespace task_master;
   //write the network list in ram to wifi.json
   void wifi_manager::write_to_file(){
     File wifi_file = LittleFS.open("wifi.json", "w");
-
-    JsonDocument doc;
-
-    JsonArray doc_wifi = doc["networks"].to<JsonArray>();
-
-    for(wifi_config i: wifi_configs){
-      doc_wifi.add(i.to_json());
-    }
-
-    doc.shrinkToFit();
-    serializeJson(doc, wifi_file);
+    std::string temp = write_to_string();
+    wifi_file.write(temp.c_str(),temp.size());
     wifi_file.close();
   }
 
@@ -108,3 +100,21 @@ using namespace task_master;
       }
     }
   }
+
+  std::string wifi_manager::write_to_string(){
+    std::string out;
+    JsonDocument doc;
+
+    JsonArray doc_wifi = doc["networks"].to<JsonArray>();
+
+    for(wifi_config i: wifi_configs){
+      doc_wifi.add(i.to_json());
+    }
+
+    doc.shrinkToFit();
+    serializeJson(doc, out);
+
+    return out;
+  }
+
+  wifi_manager w_manager;

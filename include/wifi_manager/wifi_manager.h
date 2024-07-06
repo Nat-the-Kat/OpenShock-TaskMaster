@@ -1,9 +1,8 @@
 #pragma once
-#include <WiFi.h>
 #include <vector>
 #include <ArduinoJson.h>
-#include <LittleFS.h>
 #include "wifi_manager/wifi_config.h"
+#include <string>
 
 namespace task_master{
   class wifi_manager{
@@ -19,11 +18,14 @@ namespace task_master{
       void clear_networks();
       void print_networks();
       bool search_for_network();
+
+      std::string write_to_string();
     private:
       std::vector <wifi_config> wifi_configs;
       void read_from_stream(Stream &s);
-      void write_to_stream(Stream &s);
+      
   };
 }
+extern task_master::wifi_manager w_manager;
 
 

@@ -1,4 +1,8 @@
 #include "web_server/web_server.h"
+#include "wifi_manager/wifi_manager.h"
+#include "task_manager/task_manager.h"
+#include "config/config.h"
+#include <WebServer.h>
 
 using namespace task_master;
 
@@ -6,30 +10,6 @@ WebServer web_server::server(80);
 
 void web_server::not_found(){
   web_server::server.send(404,"text/plain","whatever you are looking for doesn't exist!");
-}
-
-void web_server::index_page(){
-  File index_file = LittleFS.open("/portal/index.html", "r");
-  web_server::server.streamFile(index_file,"text/html",200);
-  index_file.close();
-}
-
-void web_server::config_page(){
-  File config_file = LittleFS.open("/portal/config.html", "r");
-  web_server::server.streamFile(config_file,"text/html",200);
-  config_file.close();
-}
-
-void web_server::networks_page(){
-  File networks_file = LittleFS.open("/portal/networks.html", "r");
-  web_server::server.streamFile(networks_file,"text/html",200);
-  networks_file.close();
-}
-
-void web_server::tasks_page(){
-  File tasks_file = LittleFS.open("/portal/tasks.html", "r");
-  web_server::server.streamFile(tasks_file,"text/html",200);
-  tasks_file.close();
 }
 
 void web_server::init(){
@@ -49,6 +29,9 @@ void web_server::init(){
   web_server::server.on("/ram/networks", web_server::networks_ram);
 
   web_server::server.on("/scripts/jquery-3.3.1.min.js",web_server::fetch_jquery);
+  web_server::server.on("/scripts/config_script.js",web_server::fetch_config_script);
+  web_server::server.on("/scripts/task_script.js",web_server::fetch_task_script);
+  web_server::server.on("/scripts/network_script.js",web_server::fetch_network_script);
 
   web_server::server.onNotFound(not_found);
   web_server::server.begin();
@@ -56,35 +39,13 @@ void web_server::init(){
 }
 
 void web_server::config_ram(){
-
-}
-
-void web_server::config_flash(){
-  File config_file = LittleFS.open("/config.json", "r");
-  web_server::server.streamFile(config_file,"application/json",200);
-  config_file.close();  
+  web_server::server.send(200,"application/json",conf.write_to_string().c_str());
 }
 
 void web_server::tasks_ram(){
-
+  web_server::server.send(200,"application/json",manager.write_to_string().c_str());
 }
-
-void web_server::tasks_flash(){
-  File tasks_file = LittleFS.open("/tasks.json", "r");
-  web_server::server.streamFile(tasks_file,"application/json",200);
-  tasks_file.close(); 
-}
-    
+   
 void web_server::networks_ram(){
-
-}
-
-void web_server::networks_flash(){
-
-}
-
-void web_server::fetch_jquery(){
-  File jquery_file = LittleFS.open("/scripts/jquery-3.3.1.min.js", "r");
-  web_server::server.streamFile(jquery_file,"text/plain",200);//pretty sure this the wrong way to do it...
-  jquery_file.close(); 
+  web_server::server.send(200,"application/json",w_manager.write_to_string().c_str());
 }
