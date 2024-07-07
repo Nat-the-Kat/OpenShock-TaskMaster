@@ -10,11 +10,10 @@
       <a href="tasks.html">task list</a>
       <a href="networks.html">wifi list</a>
     </nav>
-    <script src="/scripts/jquery-3.3.1.min.js"></script>
-    <script src="/scripts/task_script.js"></script>
     <h1>Task management</h1>
     <input type="button" id="from_ram" onclick="load_from_ram()" value="show task list in ram">
     <input type="button" id="from_flash" onclick="load_from_flash()" value="show task list in flash"> 
+    <input type="button" id="from_const" onclick="load_from_const()" value="show task list in js const"> 
     <br>
     <br>
     <table border="1 px">
@@ -27,9 +26,14 @@
         <td>warn time</td><td>warning intensity</td><td>warning type</td><td>warning duration</td><td>warning message</td><td>reward message</td>
         <td>gpio</td></tr>
       </thead>
-      <tbody id="task_table">
+      <tbody id="task_table_body">
       </tbody>
     </table>
-
+    <!--<script src="/scripts/jquery-3.3.1.min.js"></script>
+    <script src="/scripts/task_script.js"></script>
+    <script src="/scripts/common.js"></script>-->
+    <script src="./scripts/jquery-3.3.1.min.js"></script>
+    <script src="./scripts/task_script.js"></script>
+    <script src="./scripts/common.js"></script>
   </body>
 </html>

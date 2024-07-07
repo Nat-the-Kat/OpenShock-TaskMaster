@@ -10,28 +10,66 @@
       <a href="tasks.html">task list</a>
       <a href="networks.html">wifi list</a>
     </nav>
-    <script src="/scripts/jquery-3.3.1.min.js"></script>
-    <script src="/scripts/config_script.js"></script>
     <h1>Config panel</h1>
-    <input type="button" id="from_ram" onclick="load_from_ram()" value="show config in ram">
-    <input type="button" id="from_flash" onclick="load_from_flash()" value="show config in flash"> 
+    <input type="button" id="from_ram" onclick="load_from_ram()" value="load config from ram">
+    <input type="button" id="from_flash" onclick="load_from_flash()" value="load config from flash"> 
+    <input type="button" id="from_const" onclick="load_from_const()" value="load config from js const"> 
     <br>
     <br>
     <table border="1 px">
       <thead>
-        <tr><td>ntp server</td><td>can override</td><td>override pin</td><td>number of overrides</td><td>reset day</td><td>message time</td><td>reset time</td><td>timezone</td></tr>
+        <tr>
+          <th>ntp server</th>
+          <th>can override</th>
+          <th>override pin</th>
+          <th>number of overrides</th>
+          <th>reset day</th>
+          <th>message time</th>
+          <th>reset time</th>
+          <th>timezone</th>
+      </tr>
       </thead>
-      <tbody id = "config_table">
+      <tbody id="config_body">
+        <tr>
+          <td><input type="text" id="ntp_server" size="12" value="null" disabled=true></td>
+          <td><select id = "can_override" disabled=true onchange="update_override()">
+            <option value="false">false</option>
+            <option value="true">true</option>
+          </select></td>
+          <td><input type="number" id="override_pin" min="0" max="24" value="0" disabled=true></td>
+          <td><input type="number" id="num_overrides" min="0" max="7" value="0" disabled=true></td>
+          <td><input type="number" id="reset_day" min="0" max="6" value="0" disabled=true></td>
+          <td><input type="number" id="message_time" value="0" disabled=true></td>
+          <td><input type="text" id="reset_time" size="8" value="null" disabled=true></td>
+          <td><input type="text" id="timezone" size="9" value="null" disabled=true></td>
+        </tr>
       </tbody>
     </table>
     <br>
     <br>
     <table border="1 px">
       <thead>
-        <tr><td>OpenShock server</td><td>api key</td><td>shocker</td></tr>
+        <tr>
+          <th>OpenShock server</th>
+          <th>api key</th>
+          <th>shocker</th>
+        </tr>
       </thead>
-      <tbody id="os_config_table">
+      <tbody>
+        <tr>
+          <td><input type="text" id="os_server" size="12" value="null" disabled=true></td>
+          <td><input type="text" id="api_key" size="12" value="null" disabled=true></td>
+          <td><input type="text" id="shocker_id" size="12" value="null" disabled=true></td>
+        </tr>
       </tbody>
     </table>
+    <br>
+    <input type="button" id="to_ram" onclick="write_to_ram()" value="write to ram">
+    <!--<script src="/scripts/jquery-3.3.1.min.js"></script>
+    <script src="/scripts/config_script.js"></script>
+    <script src="/scripts/common.js"></script>-->
+    <script src="./scripts/jquery-3.3.1.min.js"></script>
+    <script src="./scripts/config_script.js"></script>
+    <script src="./scripts/common.js"></script>
   </body>
 </html>

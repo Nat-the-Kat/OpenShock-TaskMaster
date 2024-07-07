@@ -10,19 +10,43 @@
       <a href="tasks.html">task list</a>
       <a href="networks.html">wifi list</a>
     </nav>
-    <script src="/scripts/jquery-3.3.1.min.js"></script>
-    <script src="/scripts/network_script.js"></script>
+
+
     <h1>Network management panel</h1>
     <input type="button" id="from_ram" onclick="load_from_ram()" value="show network list in ram">
     <input type="button" id="from_flash" onclick="load_from_flash()" value="show network list in flash"> 
+    <input type="button" id="from_const" onclick="load_from_const()" value="show network list in js const"> 
     <br>
     <br>
-    <table border="1 px">
+    <table id="network_table" border="1 px">
       <thead>
-        <tr><td>ssid</td><td>password</td></tr>
+        <tr>
+          <th></th>
+          <th scope="col">ssid</th>
+          <th scope="col">password</th>
+        </tr>
+        <tr>
+          <td>
+            <input type="button" id="add_network" onclick="add_network()" value="add">
+          </td>
+          <td>
+            <input type="text" id="add_ssid">
+          </td>
+          <td>
+            <input type="text" id="add_password">
+          </td>
+        </tr>
       </thead>
-      <tbody id="network_table">
+      <tbody>
       </tbody>
     </table>
+    <input type="button" id="to_ram" onclick="write_to_ram()" value="write to ram">
+    <input type="button" id="delete_selected" onclick="delete_selected()" value="delete selected networks">
+    <!--<script src="/scripts/jquery-3.3.1.min.js"></script>
+    <script src="/scripts/network_script.js"></script>
+    <script src="/scripts/common.js"></script>-->
+    <script src="./scripts/jquery-3.3.1.min.js"></script>
+    <script src="./scripts/network_script.js"></script>
+    <script src="./scripts/common.js"></script>
   </body>
 </html>

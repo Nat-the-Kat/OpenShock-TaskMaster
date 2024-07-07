@@ -1,11 +1,11 @@
-function clear_tables(){
-  var table = document.getElementById("task_table");
-  table.innerHTML = "";
+let table_body = document.getElementById("task_table_body");
 
+
+function clear_rows(){
+  table_body.innerHTML = "";
 }
 
 function load_from_ram(){
-  clear_tables();
   $.ajax({
     url:"/ram/tasks",
     type:"GET",
@@ -16,7 +16,6 @@ function load_from_ram(){
 }
 
 function load_from_flash(){
-  clear_tables();
   $.ajax({
     url:"/flash/tasks",
     type:"GET",
@@ -26,7 +25,14 @@ function load_from_flash(){
   });
 }
 
+function load_from_const(){
+  const text = "{\"tasks\":[{\"name\":\"hydrate\",\"type\":3,\"can_punish\":true,\"can_warn\":true,\"can_reward\":true,\"start\":[9,0,0],\"end\":[23,0,0],\"interval\":[1,0,0],\"punish_time\":[0,55,0],\"punishment\":{\"intensity\":40,\"type\":\"Shock\",\"duration\":1000,\"message\":\"Drink some water. Its good for you.\"},\"warn_time\":[0,45,0],\"warning\":{\"intensity\":50,\"type\":\"Vibrate\",\"duration\":1000,\"message\":\"Its time to drink some water.\"},\"reward_message\":\"Good job\",\"gpio\":5},{\"name\":\"eat food\",\"type\":2,\"can_punish\":true,\"can_warn\":true,\"can_reward\":true,\"window\":[0,30,0],\"punish_time\":[12,45,0],\"punishment\":{\"intensity\":40,\"type\":\"Shock\",\"duration\":1000,\"message\":\"Eat something. Its good for you.\"},\"warn_time\":[12,30,0],\"warning\":{\"intensity\":50,\"type\":\"Vibrate\",\"duration\":1000,\"message\":\"its lunch time, you should have something to eat!\"},\"reward_message\":\"Good job\",\"gpio\":4},{\"name\":\"wake up\",\"type\":1,\"can_punish\":true,\"can_warn\":true,\"can_reward\":true,\"punish_time\":[8,45,0],\"punishment\":{\"intensity\":100,\"type\":\"Shock\",\"duration\":1000,\"message\":\"You really should have gotten up by now...\"},\"warn_time\":[8,30,0],\"warning\":{\"intensity\":100,\"type\":\"Vibrate\",\"duration\":1000,\"message\":\"Its time to wake up\"},\"reward_message\":\"Good morning!\",\"gpio\":3}]}";
+  var obj = JSON.parse(text);
+  update_tasks(obj);
+}
+
 function update_tasks(data){
+  clear_rows();
   var tasks = data.tasks;
 
   var task_table = "";
@@ -59,9 +65,5 @@ function update_tasks(data){
     task_table += "<td>" + tasks[i].gpio + "</td></tr>";
   }
 
-  $("#task_table").append(task_table);
-}
-
-function on_error(error) {
-  alert("error");
+  $("#task_table_body").append(task_table);
 }
