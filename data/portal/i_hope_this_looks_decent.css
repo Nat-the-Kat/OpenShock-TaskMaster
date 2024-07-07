@@ -1,0 +1,82 @@
+body {
+  background-color: #1d1d1d;
+  color: #dddddd;
+  border-color: #808080;
+  font-family: Arial, Helvetica, sans-serif;
+  /*the temptation to use comic sans just for lols is strong...
+  *sigh* not today...
+  font-family:'Comic Sans MS';*/
+}
+
+input[type="text"][disabled=true] , input[type="number"][disabled=true] ,table select[disabled=true]  {
+  width: 80px;
+  background-color: #3b3b3b;
+  border:1px solid rgba(118, 118, 118, 0.3);
+  color: #aaaaaa;
+  margin: 3px;
+}
+input[type="text"], input[type="number"], table select{
+  width: 80px;
+  background-color: #4b4b4b;
+  border:1px solid rgba(118, 118, 118, 0.3);
+  color: #d2d2d2;
+  margin: 3px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table input[type="button"]{
+  width: 40px;
+}
+
+table td, table th {
+  border: 1px solid #585858;
+  text-align: center;
+  margin: 3px;
+  
+}
+
+table tr:nth-child(even){
+  background-color: #303030;
+}
+
+table tr:hover {
+  background-color: #383838;
+}
+
+table th {
+  text-align: center;
+  padding: 3px;
+}
+
+table input {
+  margin: 3px;
+}
+
+/*stuff specific to tasks.html
+is this the correctway to this? probably not. but i want to 
+minimize the amount of files im putting in LittleFS, so having
+one style sheet for all webpages it is.*/
+#task_table {
+  width: 1200px;
+}
+
+#punish_table {
+  width: 550px;
+}
+
+#warning_table {
+  width: 550px;
+}
+
+/*stuff specific to config.html*/
+#config_table {
+  width: 550px;
+}
+
+#os_config_table {
+  width: 200px;
+}
+

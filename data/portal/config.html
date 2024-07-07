@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>TaskMaster config panel</title>
+    <link rel="stylesheet" href="i_hope_this_looks_decent.css">
   </head>
   <body>
     <nav>
@@ -10,13 +11,13 @@
       <a href="tasks.html">task list</a>
       <a href="networks.html">wifi list</a>
     </nav>
-    <h1>Config panel</h1>
+    <h1>config panel</h1>
     <input type="button" id="from_ram" onclick="load_from_ram()" value="load config from ram">
     <input type="button" id="from_flash" onclick="load_from_flash()" value="load config from flash"> 
     <input type="button" id="from_const" onclick="load_from_const()" value="load config from js const"> 
     <br>
     <br>
-    <table border="1 px">
+    <table id="config_table">
       <thead>
         <tr>
           <th>ntp server</th>
@@ -47,7 +48,7 @@
     </table>
     <br>
     <br>
-    <table border="1 px">
+    <table id="os_config_table">
       <thead>
         <tr>
           <th>OpenShock server</th>

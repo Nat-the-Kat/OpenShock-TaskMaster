@@ -1,4 +1,10 @@
-let table_body = document.getElementById("task_table_body");
+let table_body = document.getElementById("task_table").tBodies[0];
+let punish_body = document.getElementById("punish_table").tBodies[0];
+let warning_body = document.getElementById("warning_table").tBodies[0];
+let rows = table_body.rows;
+let punishments = [];
+let warnings = [];
+let control_template = {time:[],intensity:0,type:"",duration:0,message:""};
 
 
 function clear_rows(){
@@ -35,35 +41,141 @@ function update_tasks(data){
   clear_rows();
   var tasks = data.tasks;
 
-  var task_table = "";
-
   for (var i = 0; i < tasks.length; i++) {
-    task_table += "<tr><td>" + tasks[i].name + "</td><td>" + tasks[i].type + "</td><td>" + tasks[i].can_punish + "</td><td>" + tasks[i].can_warn + "</td><td>" + tasks[i].can_reward + "</td>";
-    if(tasks[i].type == 1){
-      task_table += "<td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td>";
-    }else if(tasks[i].type == 2){
-      task_table += "<td>n/a</td><td>n/a</td><td>n/a</td><td>" + tasks[i].window[0] + ":" + tasks[i].window[1] + ":" + tasks[i].window[2] + "</td>";
-    }else if(tasks[i].type == 3){
-      task_table += "<td>" + tasks[i].start[0] + ":" + tasks[i].start[1] + ":" + tasks[i].start[2] + "</td><td>" + tasks[i].end[0] + ":" + tasks[i].end[1] + ":" + tasks[i].end[2] + "</td><td>" + tasks[i].interval[0] + ":" + tasks[i].interval[1] + ":" + tasks[i].interval[2] + "</td><td>n/a</td>";
-    }
+    insert_task_row(tasks[i]);
+  }
+}
 
-    if(tasks[i].can_punish){
-      task_table += "<td>" + tasks[i].punish_time[0] + ":" + tasks[i].punish_time[1] + ":" + tasks[i].punish_time[2] + "</td><td>" + tasks[i].punishment.intensity + "</td><td>" + tasks[i].punishment.type + "</td><td>" + tasks[i].punishment.duration + "</td><td>" + tasks[i].punishment.message + "</td>";
-    }else{
-      task_table += "<td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td>";
-    }
-    if(tasks[i].can_warn){
-      task_table += "<td>" + tasks[i].warn_time[0] + ":" + tasks[i].warn_time[1] + ":" + tasks[i].warn_time[2] + "</td><td>" + tasks[i].warning.intensity + "</td><td>" + tasks[i].warning.type + "</td><td>" + tasks[i].warning.duration + "</td><td>" + tasks[i].warning.message + "</td>";
-    }else{
-      task_table += "<td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td>";
-    }
-    if(tasks[i].can_reward){
-      task_table += "<td>" + tasks[i].reward_message + "</td>";
-    }else{
-      task_table += "<td>n/a</td>";
-    }
-    task_table += "<td>" + tasks[i].gpio + "</td></tr>";
+function insert_control_row(time, data, destination, id){
+  var pos = destination.rows.length;
+  var row = destination.insertRow(-1);
+  var control_select = row.insertCell(0);
+  var control_id = row.insertCell(1);
+  var control_time = row.insertCell(2);
+  var control_intensity = row.insertCell(3);
+  var control_type = row.insertCell(4);
+  var control_duration = row.insertCell(5);
+  var control_message = row.insertCell(6);
+  control_select.innerHTML = "<input type=\"checkbox\" id=\"" + id + "_" + pos + "\">";
+  control_id.innerHTML = pos;
+  control_time.innerHTML = time;
+  control_intensity.innerHTML = data.intensity;
+  control_type.innerHTML = data.type;
+  control_duration.innerHTML = data.duration;
+  control_message.innerHTML = data.message;
+  var row_select = document.getElementById(id+"_" + pos);
+  row_select.addEventListener("click", on_test, false);
+  return pos;
+}
+
+function insert_task_row(data){
+  var pos = table_body.rows.length;
+  var row = table_body.insertRow(-1);
+  var task_select = row.insertCell(0);
+  var name = row.insertCell(1);
+  var type = row.insertCell(2);
+  var can_punish = row.insertCell(3);
+  var can_warn = row.insertCell(4);
+  var can_reward = row.insertCell(5);
+  var start = row.insertCell(6);
+  var end = row.insertCell(7);
+  var interval = row.insertCell(8);
+  var window = row.insertCell(9);
+  var punish_id = row.insertCell(10);
+  var warning_id = row.insertCell(11);
+  var reward_message = row.insertCell(12);
+  var gpio = row.insertCell(13);
+  name.innerHTML=data.name;
+  type.innerHTML=data.type;
+  can_punish.innerHTML=data.can_punish;
+  can_warn.innerHTML=data.can_warn;
+  can_reward.innerHTML=data.can_reward;
+  gpio.innerHTML=data.gpio;
+  console.log(data.can_punish);
+  switch(data.type){
+    case 1:
+      start.innerHTML = "n/a";
+      end.innerHTML = "n/a";
+      interval.innerHTML = "n/a";
+      window.innerHTML = "n/a";
+      break;
+    case 2:
+      start.innerHTML = "n/a";
+      end.innerHTML = "n/a";
+      interval.innerHTML = "n/a";
+      window.innerHTML = data.window;
+      break;
+    case 3:
+      start.innerHTML = data.start;
+      end.innerHTML = data.end;
+      interval.innerHTML = data.interval;
+      window.innerHTML = "n/a";
+      break;
+  }
+  if(data.can_punish){
+    punish_id = insert_control_row(data.punish_time, data.punishment, punish_body, "punishment");
+  }
+  if(data.can_warn){
+    warning_id = insert_control_row(data.warn_time, data.warning, warning_body, "warning");
+  }
+  if(data.can_reward){
+    reward_message.innerHTML = data.reward_message;
   }
 
-  $("#task_table_body").append(task_table);
+  task_select.innerHTML = "<input type=\"checkbox\" id=\"task_"+pos+"\">";
+
+ // var row_select = document.getElementById("task_"+ pos);
+  //row_select.addEventListener("click",on_test,false);
+}
+
+function on_test(){
+
+}
+
+function delete_selected(){
+  for(var i = rows.length - 1; i >= 0; i--){
+    var selected = document.getElementById("row_"+i).checked;
+    if(selected){
+      console.log(i);
+      table_body.deleteRow(i);
+    }
+  }
+  //pass the current table to update_networks to reset row ids
+  //this could be better...
+  var o = to_object();
+  clear_rows();
+  update_networks(o);
+}
+
+function add_punishment(){
+  var id;
+
+
+  return id;
+}
+function add_punishment(time,data){
+  var temp = {time:[],intensity,type,duration,message};
+  temp.time= time;
+  temp.intensity = data.intensity;
+  temp.type = data.type;
+  temp.duration = data.duration;
+  temp.message = data.message;
+  return insert_control_row(temp, punish_body, "punishment");
+}
+
+function add_warning(){
+  var id;
+
+
+  return id;
+}
+
+function add_warning(time,data){
+  var temp = {time:[],intensity,type,duration,message};
+  temp.time= time;
+  temp.intensity = data.intensity;
+  temp.type = data.type;
+  temp.duration = data.duration;
+  temp.message = data.message;
+  return insert_control_row(temp, warning_body, "warning");
 }

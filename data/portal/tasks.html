@@ -2,6 +2,8 @@
 <html>
   <head>
     <title>TaskMaster task management panel</title>
+    <link rel="stylesheet" href="i_hope_this_looks_decent.css">
+
   </head>
   <body>
     <nav>
@@ -10,23 +12,129 @@
       <a href="tasks.html">task list</a>
       <a href="networks.html">wifi list</a>
     </nav>
-    <h1>Task management</h1>
+    <h1>task management</h1>
     <input type="button" id="from_ram" onclick="load_from_ram()" value="show task list in ram">
     <input type="button" id="from_flash" onclick="load_from_flash()" value="show task list in flash"> 
     <input type="button" id="from_const" onclick="load_from_const()" value="show task list in js const"> 
     <br>
     <br>
-    <table border="1 px">
+    <!--task table-->
+    <table id="task_table">
       <thead>
-        <tr><td>task name</td>
-        <td>task type</td>
-        <td>can punish</td><td>can warn</td><td>can reward</td>
-        <td>start</td><td>end</td><td>interval</td><td>window</td>
-        <td>punish time</td><td>punishment intensity</td><td>punishment type</td><td>punishment duration</td><td>punishment message</td>
-        <td>warn time</td><td>warning intensity</td><td>warning type</td><td>warning duration</td><td>warning message</td><td>reward message</td>
-        <td>gpio</td></tr>
+        <tr>
+          <th></th>
+          <th>task name</th>
+          <th>task type</th>
+          <th>can punish</th>
+          <th>can warn</th>
+          <th>can reward</th>
+          <th>start</th>
+          <th>end</th>
+          <th>interval</th>
+          <th>window</th>
+          <th>punish id</th>
+          <th>warning id</th>
+          <th>reward message</th>
+          <th>gpio</th></tr>
+        <tr>
+          <td><input type="button" id="add_task" onclick="add_task()" value="add"></td>
+          <td><input type="text" id="task_name" size="9" value="null"></td>
+          <td><input type="number" id="task_type" min="1" max="3" value="1" onchange="change_task_editor_type()"></td>
+          <td>
+            <select id = "can_punish" onchange="update_punish()">
+              <option value="false">false</option>
+              <option value="true">true</option>
+            </select>
+          </td>
+          <td>
+            <select id = "can_warn" onchange="update_warn()">
+              <option value="false">false</option>
+              <option value="true">true</option>
+            </select>
+          </td>
+          <td>
+            <select id = "can_reward" onchange="update_reward()">
+              <option value="false">false</option>
+              <option value="true">true</option>
+            </select>
+          </td>
+          <td><input type="text" id="start_time" size="9" value="null" disabled=true></td>
+          <td><input type="text" id="end_time" size="9" value="null" disabled=true></td>
+          <td><input type="text" id="interval_time" size="9" value="null" disabled=true></td>
+          <td><input type="text" id="window_time" size="9" value="null" disabled=true></td>
+          <td><input type="number" id="punish_id" value="0" disabled=true></td>
+          <td><input type="number" id="warning_id" value="0" disabled=true></td>
+
+          <td><input type="text" id="reward_message" size="9" value="null"></td>
+          <td><input type="number" id="gpio" min="0" max="24" value="0" disabled=true></td>
+        </tr>
       </thead>
-      <tbody id="task_table_body">
+      <tbody>
+      </tbody>
+    </table>
+    <br>
+    <!--punishment table-->
+    <table id="punish_table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>id</th>
+          <th>punish time</th>
+          <th>punish intensity</th>
+          <th>punish type</th>
+          <th>punish duration</th>
+          <th>punish message</th>
+        </tr>
+        <tr>
+          <td><input type="button" id="add_punishment" onclick="add_punishment()" value="add"></td>
+          <td></td>
+          <td><input type="text" id="punish_time" size="9" value="null"></td>
+          <td><input type="number" id="punish_intensity" min="0" max="100" value="0"></td>
+          <td>
+            <select id = "punish_type">
+              <option value="Sound">Sound</option>
+              <option value="Vibrate">Vibrate</option>
+              <option value="Shock">Shock</option>
+            </select>
+          </td>
+          <td><input type="number" id="punish_duration" min="300" max="30000" value="1000"></td>
+          <td><input type="text" id="punish_message" size="9" value="null"></td>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <br>
+    <!--warning table-->
+    <table id="warning_table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>id</th>
+          <th>warn time</th>
+          <th>warning intensity</th>
+          <th>warning type</th>
+          <th>warning duration</th>
+          <th>warning message</th>
+          
+        </tr>
+        <tr>
+          <td><input type="button" id="add_warning" onclick="add_warning()" value="add"></td>
+          <td></td>
+          <td><input type="text" id="warning_time" size="9" value="null" disabled=true></td>
+          <td><input type="number" id="warning_intensity" min="0" max="100" value="0" disabled=true></td>
+          <td>
+            <select id = "warning_type" disabled=true onchange="update_punish_type()">
+              <option value="Sound">Sound</option>
+              <option value="Vibrate">Vibrate</option>
+              <option value="Shock">Shock</option>
+            </select>
+          </td>
+          <td><input type="number" id="warning_duration" min="300" max="30000" value="1000" disabled=true></td>
+          <td><input type="text" id="warning_message" size="9" value="null" disabled=true></td>
+        </tr>
+      </thead>
+      <tbody>
       </tbody>
     </table>
     <!--<script src="/scripts/jquery-3.3.1.min.js"></script>

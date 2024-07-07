@@ -44,12 +44,8 @@ function update_config(data){
     document.getElementById("reset_day").disabled = true;
   }
   document.getElementById("message_time").value = config.message_time;
-  var temp = "";
-  temp += config.reset_time[0] + "," + config.reset_time[1] + "," + config.reset_time[2];
-  document.getElementById("reset_time").value = temp;
-  temp = "";
-  temp += config.timezone[0] + "," + config.timezone[1] + "," + config.timezone[2];
-  document.getElementById("timezone").value = temp;
+  document.getElementById("reset_time").value = config.reset_time;
+  document.getElementById("timezone").value = config.timezone;
 }
 
 function update_os_config(os_config){
@@ -63,28 +59,20 @@ function write_to_ram(){
   //this is kinda gross, but it works. i am so in unknown territory at this point...
   if(document.getElementById("can_override").value == "true"){
     out.config = {ntp_server, os_config:{server:"",api_key:"",shocker:""}, can_override, override_pin, num_overrides, reset_day, message_time, reset_time:[], timezone:[]};
-    out.config.ntp_server = document.getElementById("ntp_server").value;
-    out.config.os_config.server = document.getElementById("os_server").value;
-    out.config.os_config.api_key = document.getElementById("api_key").value;
-    out.config.os_config.shocker = document.getElementById("shocker_id").value;
-    out.config.can_override = document.getElementById("can_override").value;
     out.config.override_pin = document.getElementById("override_pin").value;
     out.config.num_overrides = document.getElementById("num_overrides").value;
     out.config.reset_day = document.getElementById("reset_day").value;
-    out.config.message_time = document.getElementById("message_time").value;
-    out.config.reset_time = JSON.parse("[" + document.getElementById("reset_time").value + "]");
-    out.config.timezone = JSON.parse("[" + document.getElementById("reset_time").value + "]");
   }else{
     out.config = {ntp_server, os_config:{server:"",api_key:"",shocker:""}, can_override, message_time, reset_time:[], timezone:[]};
-    out.config.ntp_server = document.getElementById("ntp_server").value;
-    out.config.os_config.server = document.getElementById("os_server").value;
-    out.config.os_config.api_key = document.getElementById("api_key").value;
-    out.config.os_config.shocker = document.getElementById("shocker_id").value;
-    out.config.can_override = document.getElementById("can_override").value;
-    out.config.message_time = document.getElementById("message_time").value;
-    out.config.reset_time = JSON.parse("["+document.getElementById("reset_time").value + "]");
-    out.config.timezone = JSON.parse("["+document.getElementById("reset_time").value + "]");
   }
+  out.config.ntp_server = document.getElementById("ntp_server").value;
+  out.config.os_config.server = document.getElementById("os_server").value;
+  out.config.os_config.api_key = document.getElementById("api_key").value;
+  out.config.os_config.shocker = document.getElementById("shocker_id").value;
+  out.config.can_override = document.getElementById("can_override").value;
+  out.config.message_time = document.getElementById("message_time").value;
+  out.config.reset_time = JSON.parse("["+document.getElementById("reset_time").value + "]");
+  out.config.timezone = JSON.parse("["+document.getElementById("reset_time").value + "]");
   var j = JSON.stringify(out);
   console.log(j);
 } 
