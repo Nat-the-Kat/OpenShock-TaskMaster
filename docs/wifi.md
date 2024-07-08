@@ -1,6 +1,6 @@
 # **wifi.json contents**
 
-wifi.json is contains the "networks" array which is an array of simple objects.
+wifi.json contains the "networks" array which is an array of simple objects.
 
 example file:
 

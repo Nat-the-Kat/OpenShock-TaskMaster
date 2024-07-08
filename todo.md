@@ -8,6 +8,9 @@
 
 ## future things
 
+* finish date part of the tod library.
+* add support for multiple shockers, and assigning different tasks to different shockers
+* add a webpage for requesting an OpenShock api key.
 * ability to set certain tasks to only run on certain days of the week/certain days of the month
 * support for daylight saving time (if applicable in your part of the world)
 * multiple tasks using same io pin.

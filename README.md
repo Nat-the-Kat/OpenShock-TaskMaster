@@ -6,6 +6,8 @@ have trouble waking up at a "reasonable" time everyday? this project can help wi
 
 want to get better at staying hydrated while you spend hours at a time gaming everyday? this project can also help with that.
 
+please note: this project does use functions specific to the rpi pico sdk, meaning its not multi-platform.
+
 ## **setting up the dev environment**
 please refer to [this](https://arduino-pico.readthedocs.io/en/latest/platformio.html).
 

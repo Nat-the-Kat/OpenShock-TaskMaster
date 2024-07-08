@@ -1,7 +1,7 @@
 # **tasks.json contents**
 
 
-Tasks.json contains the "tasks" array. For simplicity the example document will only have one task. The following is the example.
+tasks.json contains the "tasks" array. for simplicity the example document will only have one task. the following is the example.
 
 
 ```Json
@@ -13,14 +13,14 @@ lets break it apart.
 "name":"wake up",
 ```
 
-The name of the task. This is only used for housekeeping (deleting a task from the list).
+the name of the task. this is only used for housekeeping (deleting a task from the list).
 
 
 ```Json
 "type":1,
 ```
 
-This is used to specify what type of task this json object is referring to, and what (if any) extra fields are in the object. For simplicity I'll use the base task in this example. More about different task types and their extra fields later in this document.
+this is used to specify what type of task this json object is referring to, and what (if any) extra fields are in the object. for simplicity I'll use the base task in this example. more about different task types and their extra fields later in this document.
 
 
 ```Json
@@ -61,7 +61,7 @@ to keep this document relatively short, we will only look at "punishment". just 
 
 "message" is what will be written to the screen when administering the shock. it will also appear in the shockers log.
 
-Note 1: message should 96 characters long, anything longer will go off screen.
+note 1: message should be no longer than 96 characters, anything longer will go off screen.
 
 ```Json
 "reward_message":"Good morning!",
