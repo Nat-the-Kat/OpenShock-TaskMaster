@@ -10,4 +10,6 @@ namespace task_master::web_server{
   void fetch_config_script();
   void fetch_task_script();
   void fetch_network_script();
+  void fetch_common_script();
+  void fetch_css();
 }

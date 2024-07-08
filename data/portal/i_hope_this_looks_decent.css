@@ -15,14 +15,14 @@ input[type="text"][disabled], input[type="number"][disabled], select[disabled]{
   margin: 3px;
   
 }
-input[type="text"], input[type="number"],input[type="button"], select{
+input, select{
   background-color: #4b4b4b;
   border:1px solid rgba(118, 118, 118, 0.3);
   color: #d2d2d2;
   margin: 3px;
 }
 
-table input, table select{
+table input[type="text"], table input[type="number"], table select{
   width: 80px;
 }
 

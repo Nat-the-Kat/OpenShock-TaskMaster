@@ -64,7 +64,7 @@ using namespace task_master;
 
     can_punish = object["can_punish"];
     can_warn = object["can_warn"];
-    can_reward = object["reward"];
+    can_reward = object["can_reward"];
 
     if(can_punish){
       JsonArray punish_array = object["punish_time"];

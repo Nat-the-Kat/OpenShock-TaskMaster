@@ -82,19 +82,19 @@
       conf.edit_config();
 
     }else if(strncmp(input.c_str(), "write_networks", 14) == 0){
-      w_manager.write_to_file();
+      //w_manager.write_to_file();
 
     }else if(strncmp(input.c_str(), "read_networks", 13) == 0){
-      w_manager.read_from_file();
+      //w_manager.read_from_file();
 
     }else if(strncmp(input.c_str(), "view_networks", 13) == 0){
       w_manager.print_networks();
 
     }else if(strncmp(input.c_str(), "add_networks", 12) == 0){
-      w_manager.add_networks();
+      w_manager.read_from_serial();
 
     }else if(strncmp(input.c_str(), "clear_networks", 14) == 0){
-      w_manager.clear_networks();
+      //w_manager.clear_networks();
 
     }else if(strncmp(input.c_str(), "delete_network ", 15) == 0){
       input.erase(input.begin(),input.begin() + 15);

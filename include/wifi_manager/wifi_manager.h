@@ -3,27 +3,48 @@
 #include <ArduinoJson.h>
 #include "wifi_manager/wifi_config.h"
 #include <string>
+#include <WiFi.h>
+
+#define max_retry_count 5
 
 namespace task_master{
+  enum wifi_state {
+    disconnected = 0,
+    wifi_connected = 1,
+    ap_active = 2,
+    wifi_error = 3
+  };
+
   class wifi_manager{
     public:
       void init();
+      void reset();
+
+      bool read_from_stream(Stream &s);
+      std::string write_to_string();
+
+      //wifi network management functions
+      void print_networks();    
+      void read_from_serial();
+      bool delete_network(const char* ssid);
+
+      uint8_t is_connected();
+
+      bool attempt_connection(); //try to connect to a known network, else fallback to the configuration network 
+
+    private:
+      uint8_t retry_count;
+      std::vector <wifi_config> wifi_configs;
+      uint8_t current_state = disconnected;
+
+      void add_network(JsonObject object);
+
+      bool start_config_ap();
+
       void read_from_file(); //read wifi.json into ram
       void write_to_file(); //write config in ram to wifi.json
 
-      //wifi management functions
-      void add_network(JsonObject object);
-      void add_networks();
-      void delete_network(const char* ssid);
-      void clear_networks();
-      void print_networks();
-      bool search_for_network();
 
-      std::string write_to_string();
-    private:
-      std::vector <wifi_config> wifi_configs;
-      void read_from_stream(Stream &s);
-      
   };
 }
 extern task_master::wifi_manager w_manager;
