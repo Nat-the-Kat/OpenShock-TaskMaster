@@ -3,7 +3,6 @@
   <head>
     <title>TaskMaster task management panel</title>
     <link rel="stylesheet" href="i_hope_this_looks_decent.css">
-
   </head>
   <body>
     <nav>
@@ -14,11 +13,10 @@
     </nav>
     <h1>task management</h1>
     <input type="button" id="from_ram" onclick="load_from_ram()" value="show task list in ram">
-    <input type="button" id="from_flash" onclick="load_from_flash()" value="show task list in flash"> 
-    <input type="button" id="from_const" onclick="load_from_const()" value="show task list in js const"> 
+    <input type="button" id="from_flash" onclick="load_from_flash()" value="show task list in flash">
+    <input type="button" id="from_const" onclick="load_from_const()" value="show task list in js const">
     <br>
     <br>
-    <!--task table-->
     <table id="task_table">
       <thead>
         <tr>
@@ -28,118 +26,93 @@
           <th>can punish</th>
           <th>can warn</th>
           <th>can reward</th>
-          <th>start</th>
-          <th>end</th>
-          <th>interval</th>
-          <th>window</th>
-          <th>punish id</th>
-          <th>warning id</th>
-          <th>reward message</th>
-          <th>gpio</th></tr>
-        <tr>
-          <td><input type="button" id="add_task" onclick="add_task()" value="add"></td>
-          <td><input type="text" id="task_name" size="9" value="null"></td>
-          <td><input type="number" id="task_type" min="1" max="3" value="1" onchange="change_task_editor_type()"></td>
-          <td>
-            <select id = "can_punish" onchange="update_punish()">
-              <option value="false">false</option>
-              <option value="true">true</option>
-            </select>
-          </td>
-          <td>
-            <select id = "can_warn" onchange="update_warn()">
-              <option value="false">false</option>
-              <option value="true">true</option>
-            </select>
-          </td>
-          <td>
-            <select id = "can_reward" onchange="update_reward()">
-              <option value="false">false</option>
-              <option value="true">true</option>
-            </select>
-          </td>
-          <td><input type="text" id="start_time" size="9" value="null" disabled=true></td>
-          <td><input type="text" id="end_time" size="9" value="null" disabled=true></td>
-          <td><input type="text" id="interval_time" size="9" value="null" disabled=true></td>
-          <td><input type="text" id="window_time" size="9" value="null" disabled=true></td>
-          <td><input type="number" id="punish_id" value="0" disabled=true></td>
-          <td><input type="number" id="warning_id" value="0" disabled=true></td>
-
-          <td><input type="text" id="reward_message" size="9" value="null"></td>
-          <td><input type="number" id="gpio" min="0" max="24" value="0" disabled=true></td>
+          <th>gpio</th>
         </tr>
       </thead>
       <tbody>
       </tbody>
     </table>
+    <input type="button" id="delete_selected" onclick="delete_task()" value="delete selected tasks">
+    <input type="button" id="edit" onclick="load_selected()" value="edit/view selected task">
+    <input type="button" id="new_task" onclick="new_task()" value="add task">
     <br>
-    <!--punishment table-->
-    <table id="punish_table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>id</th>
-          <th>punish time</th>
-          <th>punish intensity</th>
-          <th>punish type</th>
-          <th>punish duration</th>
-          <th>punish message</th>
-        </tr>
-        <tr>
-          <td><input type="button" id="add_punishment" onclick="add_punishment()" value="add"></td>
-          <td></td>
-          <td><input type="text" id="punish_time" size="9" value="null"></td>
-          <td><input type="number" id="punish_intensity" min="0" max="100" value="0"></td>
-          <td>
-            <select id = "punish_type">
-              <option value="Sound">Sound</option>
-              <option value="Vibrate">Vibrate</option>
-              <option value="Shock">Shock</option>
-            </select>
-          </td>
-          <td><input type="number" id="punish_duration" min="300" max="30000" value="1000"></td>
-          <td><input type="text" id="punish_message" size="9" value="null"></td>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
     <br>
-    <!--warning table-->
-    <table id="warning_table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>id</th>
-          <th>warn time</th>
-          <th>warning intensity</th>
-          <th>warning type</th>
-          <th>warning duration</th>
-          <th>warning message</th>
-          
-        </tr>
-        <tr>
-          <td><input type="button" id="add_warning" onclick="add_warning()" value="add"></td>
-          <td></td>
-          <td><input type="text" id="warning_time" size="9" value="null" disabled=true></td>
-          <td><input type="number" id="warning_intensity" min="0" max="100" value="0" disabled=true></td>
-          <td>
-            <select id = "warning_type" disabled=true onchange="update_punish_type()">
-              <option value="Sound">Sound</option>
-              <option value="Vibrate">Vibrate</option>
-              <option value="Shock">Shock</option>
-            </select>
-          </td>
-          <td><input type="number" id="warning_duration" min="300" max="30000" value="1000" disabled=true></td>
-          <td><input type="text" id="warning_message" size="9" value="null" disabled=true></td>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
+    <input type="button" onclick="write_to_flash()" value="write task list to flash">
+    <div id="overlay">
+      <dialog id="editor">
+        <h3>task editor</h3>
+        <form id="editor_form">
+          <h4>general settings</h4>
+          <label for="task_name">task name:</label><br>
+          <input type="text" id="task_name" name="name" value="null"><br>
+          <label for="task_type">task type:</label><br>
+          <input type="number" id="task_type" name="type" min="1" max="3" value="1" onchange="change_tasks_type()"><br>
+          <label for="can_punish">is there a punishment?</label><br>
+          <select id="can_punish" name="type" onchange="update_editor_punish()">
+            <option value="false">false</option>
+            <option value="true">true</option>
+          </select><br>
+          <label for="can_warn">is there a warning?</label><br>
+          <select id="can_warn" onchange="update_editor_warn()">
+            <option value="false">false</option>
+            <option value="true">true</option>
+          </select><br>
+          <label for="can_reward">is there a reward message?</label><br>
+          <select id="can_reward" onchange="update_editor_reward()">
+            <option value="false">false</option>
+            <option value="true">true</option>
+          </select><br>
+          <label for="reward_message">reward message:</label><br>
+          <input type="text" id="reward_message" value="null" disabled><br>
+          <label for="gpio">gpio:</label><br>
+          <input type="number" id="gpio" min="0" max="24" value="0"><br>
+          <h4>type specific settings</h4>
+          <label for="start_time">start time:</label><br>
+          <input type="text" id="start_time" value="null" disabled><br>
+          <label for="end_time">end time:</label><br>
+          <input type="text" id="end_time" value="null" disabled><br>
+          <label for="interval_time">interval length:</label><br>
+          <input type="text" id="interval_time" value="null" disabled><br>
+          <label for="window_time">window length:</label><br>
+          <input type="text" id="window_time" value="null" disabled><br>
+          <h4>warning settings</h4>
+          <label for="warning_time">warning time:</label><br>
+          <input type="text" id="warning_time" size="9" value="null" disabled><br>
+          <label for="warning_intensity">warning intensity:</label><br>
+          <input type="number" id="warning_intensity" min="0" max="100" value="0" disabled><br>
+          <label for="warning_type">warning type:</label><br>
+          <select id="warning_type" disabled>
+            <option value="Sound">Sound</option>
+            <option value="Vibrate">Vibrate</option>
+            <option value="Shock">Shock</option>
+          </select><br>
+          <label for="warning_duration">warning duration (in ms):</label><br>
+          <input type="number" id="warning_duration" min="300" max="30000" value="1000" disabled><br>
+          <label for="warning_message">warning message:</label><br>
+          <input type="text" id="warning_message" size="9" value="null" disabled><br>
+          <h4>punishment settings</h4>
+          <label for="punish_time">punishment time:</label><br>
+          <input type="text" id="punish_time" size="9" value="null" disabled><br>
+          <label for="punish_intensity">punishment intensity:</label><br>
+          <input type="number" id="punish_intensity" min="0" max="100" value="0" disabled><br>
+          <label for="punish_type">punishment type:</label><br>
+          <select id="punish_type" disabled>
+            <option value="Sound">Sound</option>
+            <option value="Vibrate">Vibrate</option>
+            <option value="Shock">Shock</option>
+          </select><br>
+          <label for="punish_duration">warning duration (in ms):</label><br>
+          <input type="number" id="punish_duration" min="300" max="30000" value="1000" disabled><br>
+          <label for="punish_message">punishment message:</label><br>
+          <input type="text" id="punish_message" size="9" value="null" disabled><br><br>
+          <input type="button" id="cancel" value="cancel" onclick="hide_editor()">
+          <input type="button" id="confirm" value="accept" onclick="on_accept()"><br>
+        </form>
+      </dialog>
+    </div>
     <!--<script src="/scripts/jquery-3.3.1.min.js"></script>
-    <script src="/scripts/task_script.js"></script>
-    <script src="/scripts/common.js"></script>-->
+      <script src="/scripts/task_script.js"></script>
+      <script src="/scripts/common.js"></script>-->
     <script src="./scripts/jquery-3.3.1.min.js"></script>
     <script src="./scripts/task_script.js"></script>
     <script src="./scripts/common.js"></script>

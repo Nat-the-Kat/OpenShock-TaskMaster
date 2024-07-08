@@ -1,20 +1,6 @@
 let table_body = document.getElementById("network_table").getElementsByTagName("tbody").item(0);
 let rows = table_body.rows;
 
-function clear_rows(){
-  table_body.innerHTML= "";
-}
-
-function load_from(link, update){
-  clear_rows();
-  $.ajax({
-    url:link,
-    type:"GET",
-    headers:{"accept":"application/json"},
-    success:update,
-    error:on_error
-  });
-}
 
 function load_from_ram(){
   $.ajax({
@@ -43,7 +29,7 @@ function load_from_const(){
 }
 
 function update_networks(data){
-  clear_rows();
+  clear(table_body);
   var networks = data.networks;
 
   for (var i = 0; i < networks.length; i++) {
@@ -90,18 +76,6 @@ function to_object(){
   console.log(out);
   return out;
 }
-
-function delete_selected(){
-  for(var i = rows.length - 1; i >= 0; i--){
-    var selected = document.getElementById("row_"+i).checked;
-    if(selected){
-      console.log(i);
-      table_body.deleteRow(i);
-    }
-  }
-  //pass the current table to update_networks to reset row ids
-  //this could be better...
-  var o = to_object();
-  clear_rows();
-  update_networks(o);
+function delete_objects(){
+  delete_selected(table_body, "row", to_object, update_networks);
 }
