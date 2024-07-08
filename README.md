@@ -1,4 +1,4 @@
-## **What is this thing?**
+## **what is this thing?**
 
 this project was a way to help someone who owns a OpenShock shocker to give shocking reminders to themselves (or others) of things they need to do on a day to day basis.
 
@@ -27,7 +27,7 @@ over the coarse of this project, the challenge turned into:
 * use no uppercase letters in any part of the documentation (excluding names)
 
 ## **contributing**
-pease feel free to submit pull requests, i just ask that you follow the challenge set out above. contributers will be credited for their work below.
+please feel free to submit pull requests, i just ask that you follow the challenge set out above. contributers will be credited for their work below.
 
 ## **special thanks**
 
