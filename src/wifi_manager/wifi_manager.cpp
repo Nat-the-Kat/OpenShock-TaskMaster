@@ -1,14 +1,16 @@
 #include "wifi_manager/wifi_manager.h"
 #include <LittleFS.h>
+#include <WiFi.h>
 
+WiFiMulti wifi;
 
 using namespace task_master;
   //check if wifi.json exists
   void wifi_manager::init(){
     wifi_configs.clear();
     retry_count = max_retry_count;
-    File wifi_file = LittleFS.open("wifi.json", "r");
-    if(!wifi_file){
+    //File wifi_file = LittleFS.open("wifi.json", "r");
+    if(!LittleFS.exists("wifi.json")){
       Serial.println("no wifi list detected! starting configuration network!");
       start_config_ap();
     } else {
@@ -50,7 +52,6 @@ using namespace task_master;
       Serial.println("network(s) added!");
       write_to_file();
     }
-    
   }
     
 
@@ -73,29 +74,17 @@ using namespace task_master;
   }
 
   bool wifi_manager::attempt_connection(){
-    WiFi.disconnect();
+    retry_count = max_retry_count;
+    wifi.clearAPList();
+    for(wifi_config current: wifi_configs){
+      wifi.addAP(current.ssid.c_str(),current.password.c_str());
+    }
     while(retry_count <= 0){
-      int count = WiFi.scanNetworks();
-      if(!count){
-        Serial.println("\nerror! no wifi networks detected!");
-        retry_count--;
-      }else{
-        for(int i = 0; i < count; i++){
-          for(wifi_config current: wifi_configs){
-            if(strcmp(current.ssid.c_str(), WiFi.SSID(i)) == 0){
-              char buffer[64];
-              sprintf(buffer, "found network %s", current.ssid.c_str());
-              Serial.println(buffer);
-              WiFi.begin(current.ssid.c_str(), current.password.c_str());
-              Serial.print("Connected! IP address: ");
-              Serial.println(WiFi.localIP());
-              retry_count = max_retry_count; //reset retry count
-              return true;
-            }
-          }
-        }
+      if(wifi.run()==WL_CONNECTED){
+        return true;
       }
       Serial.println("no networks found! retrying...");
+      delay(50);
       retry_count--;
     }
     //if we make it here, consider trying to find a known network a failure
@@ -115,7 +104,6 @@ using namespace task_master;
         wifi_configs.push_back(w);
       }
     }
-
     return true;
   }
 
@@ -142,27 +130,14 @@ using namespace task_master;
 
 
   //this is way more complicated than it needs to be...
-  uint8_t wifi_manager::is_connected(){
-    if(current_state != ap_active){
-      if(WiFi.status() == WL_CONNECTED){
-        return wifi_connected;
-      }else{
-        if(!attempt_connection()){
-          if(!start_config_ap()){
-            return disconnected;
-          }else{
-            return ap_active;
-          }  
-        }
-      }
+  void wifi_manager::check_connection(){
+    if(WiFi.status() == WL_CONNECTED){
+      return;
     }else{
-      if(WiFi.status() == WL_CONNECTED){
-        return ap_active;
-      }else{
-        return disconnected;
-      }
+      if(!attempt_connection()){
+        start_config_ap();
+      }  
     }
-    return wifi_error;
   }
 
   wifi_manager w_manager;

@@ -3,9 +3,11 @@
 #include <ArduinoJson.h>
 #include "wifi_manager/wifi_config.h"
 #include <string>
-#include <WiFi.h>
+
 
 #define max_retry_count 5
+
+
 
 namespace task_master{
   enum wifi_state {
@@ -28,7 +30,7 @@ namespace task_master{
       void read_from_serial();
       bool delete_network(const char* ssid);
 
-      uint8_t is_connected();
+      void check_connection();
 
       bool attempt_connection(); //try to connect to a known network, else fallback to the configuration network 
 
@@ -47,6 +49,7 @@ namespace task_master{
 
   };
 }
+
 extern task_master::wifi_manager w_manager;
 
 
