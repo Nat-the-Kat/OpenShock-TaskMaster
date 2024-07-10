@@ -2,7 +2,7 @@
 
 * ~~design webpages for configuring.~~
 * send configuration data from website back to pico.
-* add simple error checking of config portal data (null values, doubled up io pins, tasks without shocks, tasks with same name).
+* ~~add simple error checking of config portal data (null values, doubled up io pins, tasks without shocks, tasks with same name).~~
 * ~~add the ability for the pico to create its own wifi network when none are found.~~
 * ~~find and fix whatever is causing the screen to not clear properly.~~
 * find and fix the reset time freezing issue.
