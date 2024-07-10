@@ -12,9 +12,9 @@
       <a href="networks.html">wifi list</a>
     </nav>
     <h1>task management</h1>
-    <input type="button" id="from_ram" onclick="load_from_ram()" value="show task list in ram">
-    <input type="button" id="from_flash" onclick="load_from_flash()" value="show task list in flash">
-    <input type="button" id="from_const" onclick="load_from_const()" value="show task list in js const">
+    <input type="button" id="from_ram" onclick="load_from_ram()" value="load task list">
+    <!--<input type="button" id="from_flash" onclick="load_from_flash()" value="show task list in flash">
+    <input type="button" id="from_const" onclick="load_from_const()" value="show task list in js const">-->
     <br>
     <br>
     <table id="task_table">
@@ -37,7 +37,7 @@
     <input type="button" id="new_task" onclick="new_task()" value="add task">
     <br>
     <br>
-    <input type="button" onclick="write_to_flash()" value="write task list to flash">
+    <input type="button" onclick="write_to_flash()" value="save task list to flash">
     <div id="overlay">
       <dialog id="editor">
         <h3>task editor</h3>

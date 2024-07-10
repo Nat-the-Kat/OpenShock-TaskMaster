@@ -12,9 +12,9 @@
       <a href="networks.html">wifi list</a>
     </nav>
     <h1>config panel</h1>
-    <input type="button" id="from_ram" onclick="load_from_ram()" value="load config from ram">
-    <input type="button" id="from_flash" onclick="load_from_flash()" value="load config from flash"> 
-    <input type="button" id="from_const" onclick="load_from_const()" value="load config from js const"> 
+    <input type="button" onclick="load_from_ram()" value="load config">
+    <!--<input type="button" id="from_flash" onclick="load_from_flash()" value="load config from flash"> 
+    <input type="button" id="from_const" onclick="load_from_const()" value="load config from js const"> -->
     <br>
     <br>
     <form id="config_form">
@@ -68,7 +68,7 @@
     </table>
   </form>
     <br>
-    <input type="button" id="to_ram" onclick="write_to_ram()" value="write to ram">
+    <input type="button" onclick="write_to_flash()" value="save config to flash">
     <script src="./scripts/jquery-3.3.1.min.js"></script>
     <script src="./scripts/config_script.js"></script>
     <script src="./scripts/common.js"></script>

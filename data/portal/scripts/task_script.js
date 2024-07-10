@@ -37,7 +37,7 @@ function load_from_ram(){
   
 }
 
-function load_from_flash(){
+/*function load_from_flash(){
   load_from("/ram/config", fetch_reset_pin);
   load_from("/flash/tasks", update_tasks);
 }
@@ -47,7 +47,7 @@ function load_from_const(){
   var obj = JSON.parse(text);
   load_from("/ram/config", fetch_reset_pin);
   update_tasks(obj);
-}
+}*/
 
 function update_tasks(data){
   task_list.splice(0,table_body.rows.length);
@@ -60,7 +60,6 @@ function update_tasks(data){
 }
 
 function insert_task_row(data){
-
   var pos = table_body.rows.length;
   var row = table_body.insertRow(pos);
   var task_select = row.insertCell(0);
@@ -120,75 +119,74 @@ function show_editor(){
 }
 
 function edit_task(data){
-    form.reset();
-    task_name.value = data.name;
-    task_type.value = data.type;
-    can_punish.value = data.can_punish;
-    can_warn.value = data.can_warn;
-    can_reward.value = data.can_reward;
-    gpio.value = data.gpio;
-    for(var i = 0;i<form.elements.length;i++){
-      form.elements[i].disabled = false;
-    }
-    switch(data.type){
-      case 1:
-        start.disabled = true;
-        end.disabled = true;
-        interval.disabled = true;
-        window_time.disabled = true;
-        break;
-      case 2:
-        start.disabled = true;
-        end.disabled = true;
-        interval.disabled = true;
-        window_time.value = data.window;
-        break;
-      case 3:
-        start.value = data.start;
-        end.value = data.end;
-        interval.value = data.interval;
-        window_time.disabled = true;
-        break;
-    }
-    if(data.can_punish){
-      punish_time.value = data.punish_time;
-      punish_intensity.value = data.punishment.intensity;
-      punish_type.value = data.punishment.type;
-      punish_duration.value = data.punishment.duration;
-      punish_message.value = data.punishment.message;
-    }else{
-      punish_time.disabled = true;
-      punish_intensity.disabled = true;
-      punish_type.disabled = true;
-      punish_duration.disabled = true;
-      punish_message.disabled = true;
-    }
-    if(data.can_warn){
-      warning_time.value = data.warn_time;
-      warning_intensity.value = data.warning.intensity;
-      warning_type.value = data.warning.type;
-      warning_duration.value = data.warning.duration;
-      warning_message.value = data.warning.message;
-    }else{
-      warning_time.disabled = true;
-      warning_intensity.disabled = true;
-      warning_type.disabled = true;
-      warning_duration.disabled = true;
-      warning_message.disabled = true;
-    }
-    if(data.can_reward){
-      reward_message.value = data.reward_message;
-    }else{
-      reward_message.disabled = true;
-    }
-    show_editor();
+  form.reset();
+  task_name.value = data.name;
+  task_type.value = data.type;
+  can_punish.value = data.can_punish;
+  can_warn.value = data.can_warn;
+  can_reward.value = data.can_reward;
+  gpio.value = data.gpio;
+  for(var i = 0; i < form.elements.length; i++){
+    form.elements[i].disabled = false;
+  }
+  switch (data.type){
+    case 1:
+      start.disabled = true;
+      end.disabled = true;
+      interval.disabled = true;
+      window_time.disabled = true;
+      break;
+    case 2:
+      start.disabled = true;
+      end.disabled = true;
+      interval.disabled = true;
+      window_time.value = data.window;
+      break;
+    case 3:
+      start.value = data.start;
+      end.value = data.end;
+      interval.value = data.interval;
+      window_time.disabled = true;
+      break;
+  }
+  if(data.can_punish){
+    punish_time.value = data.punish_time;
+    punish_intensity.value = data.punishment.intensity;
+    punish_type.value = data.punishment.type;
+    punish_duration.value = data.punishment.duration;
+    punish_message.value = data.punishment.message;
+  }else{
+    punish_time.disabled = true;
+    punish_intensity.disabled = true;
+    punish_type.disabled = true;
+    punish_duration.disabled = true;
+    punish_message.disabled = true;
+  }
+  if(data.can_warn){
+    warning_time.value = data.warn_time;
+    warning_intensity.value = data.warning.intensity;
+    warning_type.value = data.warning.type;
+    warning_duration.value = data.warning.duration;
+    warning_message.value = data.warning.message;
+  }else{
+    warning_time.disabled = true;
+    warning_intensity.disabled = true;
+    warning_type.disabled = true;
+    warning_duration.disabled = true;
+    warning_message.disabled = true;
+  }
+  if(data.can_reward){
+    reward_message.value = data.reward_message;
+  }else{
+    reward_message.disabled = true;
+  }
+  show_editor();
 }
 
 function hide_editor(){
   document.getElementById("overlay").style.display = "none";
   editor_dialog.open = false;
 }
-
 
 function to_object(){
   var data;
@@ -342,5 +340,7 @@ function new_task(){
 }
 
 function write_to_flash(){
-  console.log(JSON.stringify(to_object()));
+  var j = JSON.stringify(to_object());
+  $.post("/flash/tasks",j);
+  console.log(j);
 }

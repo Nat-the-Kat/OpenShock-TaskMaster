@@ -6,7 +6,7 @@ function load_from_ram(){
   load_from("/ram/networks", update_networks);
 }
 
-function load_from_flash(){
+/*function load_from_flash(){
   load_from("/flash/networks", update_networks);
 }
 
@@ -14,7 +14,7 @@ function load_from_const(){
   const text = "{\"networks\":[{\"ssid\":\"1ssid\",\"password\":\"1password\"},{\"ssid\":\"ssid1\",\"password\":\"password1\"},{\"ssid\":\"ssid2\",\"password\":\"password2\"}]}";
   var obj = JSON.parse(text);
   update_networks(obj);
-}
+}*/
 
 function update_networks(data){
   clear(table_body);
@@ -48,12 +48,9 @@ function add_network(){
   insert_row(add_ssid,add_password);
 }
 
-function on_test(){
-  console.log(this);
-}
-
-function write_to_ram(){
+function write_to_flash(){
   var j = JSON.stringify(to_object());
+  $.post("/flash/networks",j);
   console.log(j);
 }
 

@@ -14,9 +14,9 @@
 
 
     <h1>network management panel</h1>
-    <input type="button" id="from_ram" onclick="load_from_ram()" value="show network list in ram">
-    <input type="button" id="from_flash" onclick="load_from_flash()" value="show network list in flash"> 
-    <input type="button" id="from_const" onclick="load_from_const()" value="show network list in js const"> 
+    <input type="button" onclick="load_from_ram()" value="load network list">
+    <!--<input type="button" id="from_flash" onclick="load_from_flash()" value="show network list in flash"> 
+    <input type="button" id="from_const" onclick="load_from_const()" value="show network list in js const"> -->
     <br>
     <br>
     <table id="network_table" border="1 px">
@@ -41,7 +41,7 @@
       <tbody>
       </tbody>
     </table>
-    <input type="button" id="to_ram" onclick="write_to_ram()" value="write to ram">
+    <input type="button" onclick="write_to_flash()" value="save network list to flash">
     <input type="button" id="delete_selected" onclick="delete_objects()" value="delete selected networks">
     <script src="./scripts/jquery-3.3.1.min.js"></script>
     <script src="./scripts/network_script.js"></script>
