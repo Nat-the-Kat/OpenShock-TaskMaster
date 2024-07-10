@@ -37,7 +37,7 @@ void web_server::init(){
 
   web_server::server.on("/i_hope_this_looks_decent.css",web_server::fetch_css);
 
-  web_server::server.on("/test", web_server::nulla);
+  web_server::server.on("/test",HTTP_POST, web_server::nulla);
 
   web_server::server.onNotFound(not_found);
   web_server::server.begin();
@@ -46,6 +46,7 @@ void web_server::init(){
 
 void web_server::config_ram(){
   web_server::server.send(200,"application/json",conf.write_to_string().c_str());
+  
 }
 
 void web_server::tasks_ram(){
@@ -56,6 +57,3 @@ void web_server::networks_ram(){
   web_server::server.send(200,"application/json",w_manager.write_to_string().c_str());
 }
 
-void web_server::nulla(){
-  web_server::server.send(200,"text/plain","ok");
-}

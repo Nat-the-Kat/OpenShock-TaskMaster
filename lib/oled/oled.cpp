@@ -18,6 +18,7 @@
     Wire.setSDA(20);
     Wire.setSCL(21);
     Wire.begin();
+    i2c_set_baudrate(i2c0,100000);
     address= a;
     write_command(0xae);  //display off
     write_command(0xd5);  //set osc frequency
@@ -45,6 +46,8 @@
     write_command(0x20);  //set horizontal display mode
     write_command(0x00);
     write_command(0xaf);  //display on
+    delay(100);
+    clear();
   }
 
   void ssd1306::load_font(const uint8_t* f){
@@ -71,12 +74,14 @@
 
   void ssd1306::clear(){
     write_command(0xae);
+    noInterrupts();
     for(int r = 0; r < 8; r++) {
       cursor_pos(r,0);
       for(int c = 0; c < 16; c++) {  
         write_char_8(' ');
       }
     }
+    interrupts();
     write_command(0xaf);
     cursor_pos(0,0);
   }

@@ -128,8 +128,6 @@ using namespace task_master;
     
   }
 
-
-  //this is way more complicated than it needs to be...
   void wifi_manager::check_connection(){
     if(WiFi.status() == WL_CONNECTED){
       return;

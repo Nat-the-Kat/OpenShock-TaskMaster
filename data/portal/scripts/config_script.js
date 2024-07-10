@@ -83,7 +83,7 @@ function write_to_ram(){
 
   var j = JSON.stringify(out);
   if(check_form(config_form)){
-  $.post("/flash/config",j);
+  send_data("/flash/config", j);
   console.log(j);
   }
 

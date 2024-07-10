@@ -48,3 +48,11 @@ function check_form(form){
 
   return true;
 }
+
+function send_data(url, data){
+  xmlHttp = new XMLHttpRequest();
+  var formData = new FormData();
+  formData.append("data", new Blob([data], { type: "application/json" }));
+  xmlHttp.open("POST", url);
+  xmlHttp.send(formData);
+}

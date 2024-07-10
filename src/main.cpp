@@ -14,6 +14,7 @@ using namespace task_master;
 
 
   void setup() {
+    //interrupts
     rp2040.idleOtherCore();
     Serial.begin(115200);
 
@@ -42,22 +43,20 @@ using namespace task_master;
   }
 
   void loop() {
-    if(Serial.available() > 0) {
-      parse_serial();
-    }
     w_manager.check_connection();  
-    //
     web_server::server.handleClient();
   }
 
   void setup1(){
     oled.init(20,21);
-    oled.clear();
     oled.set_frame_callback(250,&frame_callback);
 
   }
 
   void loop1(){
+    if(Serial.available() > 0) {
+      parse_serial();
+    }
     manager.check_tasks();
   }
 

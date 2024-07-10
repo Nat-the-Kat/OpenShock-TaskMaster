@@ -38,8 +38,6 @@ function insert_row(ssid, password){
   network_select.innerHTML = "<input type=\"checkbox\" id=\"row_"+pos+"\">";
   s.innerHTML=ssid;
   p.innerHTML=password; 
-  var row_select = document.getElementById("row_"+ pos);
-  row_select.addEventListener("click",on_test,false);
 }
 
 function add_network(){
@@ -50,7 +48,7 @@ function add_network(){
 
 function write_to_flash(){
   var j = JSON.stringify(to_object());
-  $.post("/flash/networks",j);
+  send_data("/flash/networks", j);
   console.log(j);
 }
 
