@@ -36,9 +36,7 @@ void web_server::init(){
   web_server::server.on("/scripts/common.js",web_server::fetch_common_script);
 
   web_server::server.on("/i_hope_this_looks_decent.css",web_server::fetch_css);
-
-  web_server::server.on("/test",HTTP_POST, web_server::nulla);
-
+  
   web_server::server.onNotFound(not_found);
   web_server::server.begin();
   Serial.println("server started!");
