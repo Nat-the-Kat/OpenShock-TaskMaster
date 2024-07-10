@@ -1,21 +1,26 @@
 #include "wifi_manager/wifi_manager.h"
 #include <LittleFS.h>
 #include <WiFi.h>
+#include "debug/bp.h"
 
 WiFiMulti wifi;
 
 using namespace task_master;
   //check if wifi.json exists
   void wifi_manager::init(){
+    
     wifi_configs.clear();
     retry_count = max_retry_count;
     //File wifi_file = LittleFS.open("wifi.json", "r");
+    bp(1);
     if(!LittleFS.exists("wifi.json")){
+      bp(2);
       Serial.println("no wifi list detected! starting configuration network!");
       start_config_ap();
     } else {
+      bp(3);
       read_from_file();
-      attempt_connection();
+      Serial.println(attempt_connection());
     }
   }
 
@@ -79,7 +84,7 @@ using namespace task_master;
     for(wifi_config current: wifi_configs){
       wifi.addAP(current.ssid.c_str(),current.password.c_str());
     }
-    while(retry_count <= 0){
+    while(retry_count >= 0){
       if(wifi.run()==WL_CONNECTED){
         return true;
       }
