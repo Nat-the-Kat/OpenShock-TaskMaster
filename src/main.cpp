@@ -17,14 +17,11 @@ using namespace task_master;
     rp2040.idleOtherCore();
     Serial.begin(115200);
 
-    while (!Serial);
+    //while (!Serial);
     pinMode(LED_BUILTIN,OUTPUT);
     digitalWrite(LED_BUILTIN,LOW);
 
     if(!LittleFS.begin()){
-      oled.cursor_pos(3,0);
-      oled.write_string_8("Failed to mount file system, rebooting...");
-      delay(2000);
       rp2040.reboot();
     }
 

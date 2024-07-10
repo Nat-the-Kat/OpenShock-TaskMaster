@@ -27,19 +27,25 @@ let warning_type = document.getElementById("warning_type");
 let warning_duration = document.getElementById("warning_duration");
 let warning_message = document.getElementById("warning_message");
 
+let reset_pin = -1;
+
 const formToObject = form => Object.fromEntries(new FormData(form));
 
 function load_from_ram(){
+  load_from("/ram/config", fetch_reset_pin);
   load_from("/ram/tasks", update_tasks);
+  
 }
 
 function load_from_flash(){
+  load_from("/ram/config", fetch_reset_pin);
   load_from("/flash/tasks", update_tasks);
 }
 
 function load_from_const(){
   const text = "{\"tasks\":[{\"name\":\"hydrate\",\"type\":3,\"can_punish\":true,\"can_warn\":true,\"can_reward\":true,\"start\":[9,0,0],\"end\":[23,0,0],\"interval\":[1,0,0],\"punish_time\":[0,55,0],\"punishment\":{\"intensity\":40,\"type\":\"Shock\",\"duration\":1000,\"message\":\"Drink some water. Its good for you.\"},\"warn_time\":[0,45,0],\"warning\":{\"intensity\":50,\"type\":\"Vibrate\",\"duration\":1000,\"message\":\"Its time to drink some water.\"},\"reward_message\":\"Good job\",\"gpio\":5},{\"name\":\"eat food\",\"type\":2,\"can_punish\":true,\"can_warn\":true,\"can_reward\":true,\"window\":[0,30,0],\"punish_time\":[12,45,0],\"punishment\":{\"intensity\":40,\"type\":\"Shock\",\"duration\":1000,\"message\":\"Eat something. Its good for you.\"},\"warn_time\":[12,30,0],\"warning\":{\"intensity\":50,\"type\":\"Vibrate\",\"duration\":1000,\"message\":\"its lunch time, you should have something to eat!\"},\"reward_message\":\"Good job\",\"gpio\":4},{\"name\":\"wake up\",\"type\":1,\"can_punish\":true,\"can_warn\":true,\"can_reward\":true,\"punish_time\":[8,45,0],\"punishment\":{\"intensity\":100,\"type\":\"Shock\",\"duration\":1000,\"message\":\"You really should have gotten up by now...\"},\"warn_time\":[8,30,0],\"warning\":{\"intensity\":100,\"type\":\"Vibrate\",\"duration\":1000,\"message\":\"Its time to wake up\"},\"reward_message\":\"Good morning!\",\"gpio\":3}]}";
   var obj = JSON.parse(text);
+  load_from("/ram/config", fetch_reset_pin);
   update_tasks(obj);
 }
 
@@ -193,8 +199,43 @@ function to_object(){
   return data;
 }
 
+function fetch_reset_pin(data){
+  if(data.config.can_override){
+    reset_pin = data.config.override_pin;
+  }
+  return;
+}
+
+function check_data(data){
+  if(!JSON.parse(can_punish.value) && !JSON.parse(can_warn.value)){
+    alert("there is no punishment or warning, what is the point of creating this task?");
+    return false;
+  }
+
+  if(reset_pin != -1 && gpio.value == reset_pin){
+    alert("the pin assigned is used for the override button!");
+    return false;
+  }
+  //check against task_list
+  for(var i=0;i<task_list.length;i++){
+    if(gpio.value == task_list[i].gpio){
+      alert("gpio is used for another task already!");
+      return false;
+    }
+    if(task_name.value == task_list[i].name){
+      alert("tasks cannot have the same name!");
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
 function on_accept(){
+
   delete_task();
+
   insert_task_row(editor_to_task());
   console.log(JSON.stringify(editor_to_task()));
   hide_editor();
@@ -207,6 +248,7 @@ function editor_to_task(){
   data.can_punish = JSON.parse(can_punish.value);
   data.can_warn = JSON.parse(can_warn.value);
   data.can_reward = JSON.parse(can_reward.value);
+
   switch(data.type){
     case 1:
       break;
