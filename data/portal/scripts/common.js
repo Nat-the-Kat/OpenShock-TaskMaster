@@ -33,7 +33,7 @@ function load_from(link, update){
 }
 
 function text_to_time(text){
-  var out = JSON.parse("["+reset_time.value + "]");
+  var out = JSON.parse("["+ text + "]");
   return out;
 }
 

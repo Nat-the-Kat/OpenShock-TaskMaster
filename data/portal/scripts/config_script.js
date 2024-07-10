@@ -56,7 +56,7 @@ function update_os_config(os_config){
   shocker_id.value = os_config.shocker;
 }
 
-function write_to_ram(){
+function write_to_flash(){
   var out = {config:{}};
   //this is kinda gross, but it works. i am so in unknown territory at this point...
   if(can_override.value == "true"){
@@ -74,12 +74,7 @@ function write_to_ram(){
   out.config.can_override = can_override.value;
   out.config.message_time = message_time.value;
   out.config.reset_time = text_to_time(reset_time.value);
-  out.config.timezone = text_to_time(reset_time.value);
-
-  //this is going to be really stupid....
-  if(true){
-
-  }
+  out.config.timezone = text_to_time(timezone.value);
 
   var j = JSON.stringify(out);
   if(check_form(config_form)){

@@ -204,7 +204,7 @@ function fetch_reset_pin(data){
   return;
 }
 
-function check_data(data){
+function check_data(){
   if(!JSON.parse(can_punish.value) && !JSON.parse(can_warn.value)){
     alert("there is no punishment or warning, what is the point of creating this task?");
     return false;
@@ -231,12 +231,12 @@ function check_data(data){
 
 
 function on_accept(){
-
-  delete_task();
-
-  insert_task_row(editor_to_task());
-  console.log(JSON.stringify(editor_to_task()));
-  hide_editor();
+  if(check_data()){
+    delete_task();
+    insert_task_row(editor_to_task());
+    console.log(JSON.stringify(editor_to_task()));
+    hide_editor();
+  }
 }
 
 function editor_to_task(){
