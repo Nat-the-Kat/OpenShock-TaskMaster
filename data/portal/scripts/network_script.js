@@ -3,23 +3,11 @@ let rows = table_body.rows;
 
 
 function load_from_ram(){
-  $.ajax({
-    url:"/ram/networks",
-    type:"GET",
-    headers:{"accept":"application/json"},
-    success:update_networks,
-    error:on_error
-  });
+  load_from("/ram/networks", update_networks);
 }
 
 function load_from_flash(){
-  $.ajax({
-    url:"/flash/networks",
-    type:"GET",
-    headers:{"accept":"application/json"},
-    success:update_networks,
-    error:on_error
-  });
+  load_from("/flash/networks", update_networks);
 }
 
 function load_from_const(){
@@ -38,6 +26,10 @@ function update_networks(data){
 }
 
 function insert_row(ssid, password){
+  if(ssid==""){
+    alert("ssid field is empty!");
+    return;
+  }
   var pos = rows.length;
   var row = table_body.insertRow(-1);
   var network_select = row.insertCell(0);

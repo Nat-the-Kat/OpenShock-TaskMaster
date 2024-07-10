@@ -31,3 +31,20 @@ function load_from(link, update){
     error:on_error
   });
 }
+
+function text_to_time(text){
+  var out = JSON.parse("["+reset_time.value + "]");
+  return out;
+}
+
+function check_form(form){
+  for(var i = 0; i < form.elements.length; i++){
+    console.log(i);
+    if(form.elements[i].value && form.elements[i].value == "null"){
+      alert("null values aren't allowed!");
+      return false;
+    }
+  }
+
+  return true;
+}

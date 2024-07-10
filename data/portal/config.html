@@ -17,6 +17,7 @@
     <input type="button" id="from_const" onclick="load_from_const()" value="load config from js const"> 
     <br>
     <br>
+    <form id="config_form">
     <table id="config_table">
       <thead>
         <tr>
@@ -32,20 +33,21 @@
       </thead>
       <tbody id="config_body">
         <tr>
-          <td><input type="text" id="ntp_server" value="null" disabled></td>
-          <td><select id = "can_override" disabled onchange="update_override()">
+          <td><input type="text" id="ntp_server" value="null"></td>
+          <td><select id = "can_override" onchange="update_override()">
             <option value="false">false</option>
             <option value="true">true</option>
           </select></td>
           <td><input type="number" id="override_pin" min="0" max="24" value="0" disabled></td>
           <td><input type="number" id="num_overrides" min="0" max="7" value="0" disabled></td>
           <td><input type="number" id="reset_day" min="0" max="6" value="0" disabled></td>
-          <td><input type="number" id="message_time" value="0" disabled></td>
-          <td><input type="text" id="reset_time" value="null" disabled></td>
-          <td><input type="text" id="timezone" value="null" disabled></td>
+          <td><input type="number" id="message_time" value="0"></td>
+          <td><input type="text" id="reset_time" value="null"></td>
+          <td><input type="text" id="timezone" value="null"></td>
         </tr>
       </tbody>
     </table>
+
     <br>
     <br>
     <table id="os_config_table">
@@ -58,12 +60,13 @@
       </thead>
       <tbody>
         <tr>
-          <td><input type="text" id="os_server" value="null" disabled></td>
-          <td><input type="text" id="api_key" value="null" disabled></td>
-          <td><input type="text" id="shocker_id" value="null" disabled></td>
+          <td><input type="text" id="os_server" value="null"></td>
+          <td><input type="text" id="api_key" value="null"></td>
+          <td><input type="text" id="shocker_id" value="null"></td>
         </tr>
       </tbody>
     </table>
+  </form>
     <br>
     <input type="button" id="to_ram" onclick="write_to_ram()" value="write to ram">
     <script src="./scripts/jquery-3.3.1.min.js"></script>

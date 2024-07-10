@@ -7,6 +7,7 @@
 #include "helpers/stream_to_string.h"
 #include <tod.h>
 #include <LittleFS.h>
+#include <oled.h>
 
 
 //very simple serial command parser to allow modifying the configuration
@@ -117,6 +118,7 @@
 
     }else{
       Serial.println("Unknown command, try help to see valid commands.");
+      oled.clear();
     }
   }
 

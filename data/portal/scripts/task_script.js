@@ -30,23 +30,11 @@ let warning_message = document.getElementById("warning_message");
 const formToObject = form => Object.fromEntries(new FormData(form));
 
 function load_from_ram(){
-  $.ajax({
-    url:"/ram/tasks",
-    type:"GET",
-    headers:{"accept":"application/json"},
-    success:update_tasks,
-    error:on_error
-  });
+  load_from("/ram/tasks", update_tasks);
 }
 
 function load_from_flash(){
-  $.ajax({
-    url:"/flash/tasks",
-    type:"GET",
-    headers:{"accept":"application/json"},
-    success:update_tasks,
-    error:on_error
-  });
+  load_from("/flash/tasks", update_tasks);
 }
 
 function load_from_const(){
@@ -62,27 +50,28 @@ function update_tasks(data){
 
   for (var i = 0; i < tasks.length; i++) {
     insert_task_row(tasks[i]);
-    task_list.push(tasks[i]);
   }
 }
 
 function insert_task_row(data){
+
   var pos = table_body.rows.length;
-  var row = table_body.insertRow(-1);
+  var row = table_body.insertRow(pos);
   var task_select = row.insertCell(0);
   var name = row.insertCell(1);
   var type = row.insertCell(2);
   var punish = row.insertCell(3);
   var warn = row.insertCell(4);
   var reward = row.insertCell(5);
-  var gpio = row.insertCell(6);
+  var pin = row.insertCell(6);
   name.innerHTML=data.name;
   type.innerHTML=data.type;
   punish.innerHTML=data.can_punish;
   warn.innerHTML=data.can_warn;
   reward.innerHTML=data.can_reward;
-  gpio.innerHTML=data.gpio;
+  pin.innerHTML=data.gpio;
   task_select.innerHTML = "<input type=\"checkbox\" id=\"task_"+pos+"\">";
+  task_list.push(data);
 }
 
 function delete_task(){
@@ -223,16 +212,16 @@ function editor_to_task(){
       break;
     case 2:
 
-    data.window = JSON.parse("["+window_time.value+"]");
+    data.window = text_to_time(window_time.value);
       break;
     case 3:
-      data.start = JSON.parse("["+start.value+"]");
-      data.end = JSON.parse("["+end.value+"]");
-      data.interval = JSON.parse("["+interval.value+"]");
+      data.start = text_to_time(start.value);
+      data.end = text_to_time(end.value);
+      data.interval = text_to_time(interval.value);
       break;
   }
   if(data.can_punish){
-    data.punish_time = JSON.parse("["+punish_time.value+"]");
+    data.punish_time = text_to_time(punish_time.value);
     data.punishment = {};
     data.punishment.intensity = JSON.parse(punish_intensity.value);
     data.punishment.type = punish_type.value;
@@ -240,7 +229,7 @@ function editor_to_task(){
     data.punishment.message = punish_message.value;
   }
   if(data.can_warn){
-    data.warn_time = JSON.parse("["+warning_time.value+"]");
+    data.warn_time = text_to_time(warning_time.value);
     data.warning = {};
     data.warning.intensity = JSON.parse(warning_intensity.value);
     data.warning.type = warning_type.value;

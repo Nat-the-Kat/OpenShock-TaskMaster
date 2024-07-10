@@ -8,6 +8,7 @@ using namespace task_master;
 
 WebServer web_server::server(80);
 
+
 void web_server::not_found(){
   web_server::server.send(404,"text/plain","whatever you are looking for doesn't exist!");
 }
@@ -36,6 +37,8 @@ void web_server::init(){
 
   web_server::server.on("/i_hope_this_looks_decent.css",web_server::fetch_css);
 
+  web_server::server.on("/test", web_server::nulla);
+
   web_server::server.onNotFound(not_found);
   web_server::server.begin();
   Serial.println("server started!");
@@ -51,4 +54,8 @@ void web_server::tasks_ram(){
    
 void web_server::networks_ram(){
   web_server::server.send(200,"application/json",w_manager.write_to_string().c_str());
+}
+
+void web_server::nulla(){
+  web_server::server.send(200,"text/plain","ok");
 }

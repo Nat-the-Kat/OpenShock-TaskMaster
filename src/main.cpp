@@ -16,9 +16,6 @@ using namespace task_master;
   void setup() {
     rp2040.idleOtherCore();
     Serial.begin(115200);
-    oled.init(20,21);
-    oled.clear();
-    oled.set_frame_callback(250,&frame_callback);
 
     while (!Serial);
     pinMode(LED_BUILTIN,OUTPUT);
@@ -52,16 +49,19 @@ using namespace task_master;
       parse_serial();
     }
     w_manager.check_connection();  
-    //manager.check_tasks();
+    //
     web_server::server.handleClient();
   }
 
   void setup1(){
+    oled.init(20,21);
+    oled.clear();
+    oled.set_frame_callback(250,&frame_callback);
 
   }
 
   void loop1(){
-
+    manager.check_tasks();
   }
 
   bool frame_callback(repeating_timer* t){
