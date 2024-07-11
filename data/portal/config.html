@@ -4,7 +4,7 @@
     <title>TaskMaster config panel</title>
     <link rel="stylesheet" href="i_hope_this_looks_decent.css">
   </head>
-  <body>
+  <body onload="load_from_ram()">
     <nav>
       <a href="index.html">index</a>
       <a href="config.html">configuration</a>
@@ -13,60 +13,96 @@
     </nav>
     <h1>config panel</h1>
     <input type="button" onclick="load_from_ram()" value="load config">
-    <!--<input type="button" id="from_flash" onclick="load_from_flash()" value="load config from flash"> 
-    <input type="button" id="from_const" onclick="load_from_const()" value="load config from js const"> -->
+    <!--<input type="button" id="from_const" onclick="load_from_const()" value="load config from js const"> -->
     <br>
     <br>
     <form id="config_form">
-    <table id="config_table">
-      <thead>
-        <tr>
-          <th>ntp server</th>
-          <th>can override</th>
-          <th>override pin</th>
-          <th>number of overrides</th>
-          <th>reset day</th>
-          <th>message time</th>
-          <th>reset time</th>
-          <th>timezone</th>
-      </tr>
-      </thead>
-      <tbody id="config_body">
-        <tr>
-          <td><input type="text" id="ntp_server" value="null"></td>
-          <td><select id = "can_override" onchange="update_override()">
-            <option value="false">false</option>
-            <option value="true">true</option>
-          </select></td>
-          <td><input type="number" id="override_pin" min="0" max="24" value="0" disabled></td>
-          <td><input type="number" id="num_overrides" min="0" max="7" value="0" disabled></td>
-          <td><input type="number" id="reset_day" min="0" max="6" value="0" disabled></td>
-          <td><input type="number" id="message_time" value="0"></td>
-          <td><input type="text" id="reset_time" value="null"></td>
-          <td><input type="text" id="timezone" value="null"></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <br>
-    <br>
-    <table id="os_config_table">
-      <thead>
-        <tr>
-          <th>OpenShock server</th>
-          <th>api key</th>
-          <th>shocker</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><input type="text" id="os_server" value="null"></td>
-          <td><input type="text" id="api_key" value="null"></td>
-          <td><input type="text" id="shocker_id" value="null"></td>
-        </tr>
-      </tbody>
-    </table>
-  </form>
+    
+      <label for="ntp_server">ntp server:</label><br>
+      <div class="input_container">
+      <input type="text" id="ntp_server" value="null"><br>
+      <div class="help_text">
+        ntp server used to fetch the time from.
+      </div>
+    </div><br>
+      <label for="can_override">is the override pin enabled?</label><br>
+      <div class="input_container">
+      <select id="can_override" onchange="update_override()">
+        <option value="false">false</option>
+        <option value="true">true</option>
+      </select><br>
+      <div class="help_text">
+        if true, the days tasks can be disabled. if false, they cannot be overriden.
+      </div>
+    </div><br>
+      <label for="override_pin">override pin:</label><br>
+      <div class="input_container">
+        <input type="number" id="override_pin" min="0" max="24" value="0" disabled><br>
+        <div class="help_text">
+          gpio pin used to override the days tasks.
+        </div>
+      </div><br>
+      <label for="num_overrides">number of overrides:</label><br>
+      <div class="input_container">
+        <input type="number" id="num_overrides" min="0" max="7" value="0" disabled><br>
+        <div class="help_text">
+          how many times (per week) the days tasks can be overriden.
+        </div>
+      </div><br>
+      <label for="reset_day">reset day:</label><br>
+      <div class="input_container">
+    
+        <input type="number" id="reset_day" min="0" max="6" value="0" disabled><br>
+        <div class="help_text">
+          what day of the week the number of available overrids resets.
+        </div>
+      </div><br>
+      <label for="message_time">message time:</label><br>
+      <div class="input_container">
+    
+        <input type="number" id="message_time" value="0"><br>
+        <div class="help_text">
+          time (in seconds) that messages will stay on the oled.
+        </div>
+      </div><br>
+      <label for="reset_time">reset time:</label><br>
+      <div class="input_container">
+        <input type="text" id="reset_time" value="null"><br>
+        <div class="help_text">
+          time when all the days tasks reactivate. (also when the daily override is reset, if enabled)
+        </div>
+      </div><br>
+      <label for="timezone">timezone:</label><br>
+      <div class="input_container">
+        <input type="text" id="timezone" value="null"><br>
+        <div class="help_text">
+          time offset from UTC.
+        </div>
+      </div><br>
+    
+      <h3>OpenShock related settings</h3>
+      <label for="os_server">OpenShock server:</label><br>
+      <div class="input_container">
+        <input type="text" id="os_server" value="null"><br>
+        <div class="help_text">
+          change this is you want to use a custom OpenShock instance. otherwise just use "api.openshock.app".
+        </div>
+      </div><br>
+      <label for="api_key">api key:</label><br>
+      <div class="input_container">
+        <input type="text" id="api_key" value="null"><br>
+        <div class="help_text">
+          OpenShock api key used by this device.
+        </div>
+      </div><br>
+      <label for="shocker_id">shocker id:</label><br>
+      <div class="input_container">
+        <input type="text" id="shocker_id" value="null"><br>
+        <div class="help_text">
+          id of shocker to use for warnings and punishments.
+        </div>
+      </div><br>
+    </form>
     <br>
     <input type="button" onclick="write_to_flash()" value="save config to flash">
     <script src="./scripts/jquery-3.3.1.min.js"></script>

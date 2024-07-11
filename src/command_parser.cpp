@@ -46,7 +46,7 @@
       Serial.print("used heap:"); Serial.println(rp2040.getUsedHeap());
 
     }else if(strncmp(input.c_str(), "ver", 3) == 0){
-      Serial.println("v0.00");
+      Serial.println("v0.0.0");
 
     }else if(strncmp(input.c_str(), "test", 4) == 0){
 

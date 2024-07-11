@@ -55,4 +55,5 @@ function send_data(url, data){
   formData.append("data", new Blob([data], { type: "application/json" }));
   xmlHttp.open("POST", url);
   xmlHttp.send(formData);
+  alert("data written.");
 }

@@ -80,12 +80,13 @@ using namespace task_master;
     for(wifi_config current: wifi_configs){
       wifi.addAP(current.ssid.c_str(),current.password.c_str());
     }
-    while(retry_count >= 0){
+    while(retry_count > 0){
       if(wifi.run()==WL_CONNECTED){
         return true;
       }
       Serial.println("no networks found! retrying...");
-      delay(50);
+      delay(250);
+      bp(retry_count);
       retry_count--;
     }
     //if we make it here, consider trying to find a known network a failure

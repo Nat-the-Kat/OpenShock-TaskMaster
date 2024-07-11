@@ -20,13 +20,13 @@ function load_from_ram(){
 
 /*function load_from_flash(){
 //  load_from("/flash/config", update_config);
-//}
+/}*/
 
 function load_from_const(){
   const text = "{\"config\":{\"ntp_server\":\"pool.ntp.org\",\"os_config\":{\"server\":\"null\",\"api_key\":\"null\",\"shocker\":\"null\"},\"can_override\":true,\"override_pin\":1,\"num_overrides\":1,\"reset_day\":0,\"message_time\":3,\"reset_time\":[0,0,0],\"timezone\":[-7,0,0]}}";
   var obj = JSON.parse(text);
   update_config(obj);
-}*/
+}
 
 function update_config(data){
   if(!enabled){

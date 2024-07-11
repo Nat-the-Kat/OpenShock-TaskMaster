@@ -6,11 +6,7 @@ function load_from_ram(){
   load_from("/ram/networks", update_networks);
 }
 
-/*function load_from_flash(){
-  load_from("/flash/networks", update_networks);
-}
-
-function load_from_const(){
+/*function load_from_const(){
   const text = "{\"networks\":[{\"ssid\":\"1ssid\",\"password\":\"1password\"},{\"ssid\":\"ssid1\",\"password\":\"password1\"},{\"ssid\":\"ssid2\",\"password\":\"password2\"}]}";
   var obj = JSON.parse(text);
   update_networks(obj);

@@ -28,6 +28,7 @@ let warning_duration = document.getElementById("warning_duration");
 let warning_message = document.getElementById("warning_message");
 
 let reset_pin = -1;
+let currently_editing = -1;
 
 const formToObject = form => Object.fromEntries(new FormData(form));
 
@@ -36,11 +37,6 @@ function load_from_ram(){
   load_from("/ram/tasks", update_tasks);
   
 }
-
-/*function load_from_flash(){
-  load_from("/ram/config", fetch_reset_pin);
-  load_from("/flash/tasks", update_tasks);
-}*/
 
 function load_from_const(){
   const text = "{\"tasks\":[{\"name\":\"hydrate\",\"type\":3,\"can_punish\":true,\"can_warn\":true,\"can_reward\":true,\"start\":[9,0,0],\"end\":[23,0,0],\"interval\":[1,0,0],\"punish_time\":[0,55,0],\"punishment\":{\"intensity\":40,\"type\":\"Shock\",\"duration\":1000,\"message\":\"Drink some water. Its good for you.\"},\"warn_time\":[0,45,0],\"warning\":{\"intensity\":50,\"type\":\"Vibrate\",\"duration\":1000,\"message\":\"Its time to drink some water.\"},\"reward_message\":\"Good job\",\"gpio\":5},{\"name\":\"eat food\",\"type\":2,\"can_punish\":true,\"can_warn\":true,\"can_reward\":true,\"window\":[0,30,0],\"punish_time\":[12,45,0],\"punishment\":{\"intensity\":40,\"type\":\"Shock\",\"duration\":1000,\"message\":\"Eat something. Its good for you.\"},\"warn_time\":[12,30,0],\"warning\":{\"intensity\":50,\"type\":\"Vibrate\",\"duration\":1000,\"message\":\"its lunch time, you should have something to eat!\"},\"reward_message\":\"Good job\",\"gpio\":4},{\"name\":\"wake up\",\"type\":1,\"can_punish\":true,\"can_warn\":true,\"can_reward\":true,\"punish_time\":[8,45,0],\"punishment\":{\"intensity\":100,\"type\":\"Shock\",\"duration\":1000,\"message\":\"You really should have gotten up by now...\"},\"warn_time\":[8,30,0],\"warning\":{\"intensity\":100,\"type\":\"Vibrate\",\"duration\":1000,\"message\":\"Its time to wake up\"},\"reward_message\":\"Good morning!\",\"gpio\":3}]}";
@@ -107,6 +103,7 @@ function load_selected(){
     }
   }
   if(temp){
+    currently_editing = pos;
     edit_task(task_list[pos]);
   }else{
     alert("no task selected!");
@@ -216,14 +213,17 @@ function check_data(){
   }
   //check against task_list
   for(var i=0;i<task_list.length;i++){
-    if(gpio.value == task_list[i].gpio){
-      alert("gpio is used for another task already!");
-      return false;
+    if(i != currently_editing){
+      if(gpio.value == task_list[i].gpio){
+        alert("gpio is used for another task already!");
+        return false;
+      }
+      if(task_name.value == task_list[i].name){
+        alert("tasks cannot have the same name!");
+        return false;
+      }
     }
-    if(task_name.value == task_list[i].name){
-      alert("tasks cannot have the same name!");
-      return false;
-    }
+
   }
 
   return true;
@@ -332,6 +332,7 @@ function change_tasks_type(){
 
 function new_task(){
   form.reset();
+  currently_editing = -1;
   change_tasks_type();
   update_editor_warn();
   update_editor_reward();

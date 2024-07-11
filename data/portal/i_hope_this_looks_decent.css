@@ -3,9 +3,46 @@ body {
   color: #dddddd;
   border-color: #808080;
   font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
   /*the temptation to use comic sans just for lols is strong...
   *sigh* not today...
   font-family:'Comic Sans MS';*/
+}
+
+.input_container {
+  position: relative;
+  display: inline-block;
+}
+
+.input_container .help_text {
+  visibility: hidden;
+  width: 240px;
+  background-color: #111111;
+  color: #dddddd;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 110%;
+  transform: translateY(-50%);
+}
+
+.input_container .help_text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  margin-top: 0;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #111111 transparent transparent;
+}
+
+.input_container:hover .help_text {
+  visibility: visible;
 }
 
 input[type="text"][disabled], input[type="number"][disabled], select[disabled]{
@@ -15,6 +52,11 @@ input[type="text"][disabled], input[type="number"][disabled], select[disabled]{
   margin: 3px;
   
 }
+
+input[type="button"]:active{
+  background-color: #292929;
+}
+
 input, select{
   background-color: #4b4b4b;
   border:1px solid rgba(118, 118, 118, 0.3);
@@ -22,12 +64,14 @@ input, select{
   margin: 3px;
 }
 
-table input[type="text"], table input[type="number"], table select{
+input[type="text"], input[type="number"], select{
   width: 80px;
 }
 
 table {
   border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 table input[type="button"]{
@@ -72,6 +116,7 @@ one style sheet for all webpages it is.*/
   font-family: Arial, Helvetica, sans-serif;
 }
 
+
 #overlay {
   position: absolute;
   display: none;
@@ -83,13 +128,18 @@ one style sheet for all webpages it is.*/
   bottom: 0;
   overflow: auto;
   background-color: rgba(0,0,0,0.5);
+  text-align: center;
   z-index: 2;
   cursor: pointer;
 }
 
+#editor h3, #editor h4{
+  text-align: center;
+} 
 
 #editor input[type="text"], #editor input[type="number"], #editor select{
   width: 120px;
+  
 }
 
 /*stuff specific to config.html*/
@@ -100,4 +150,9 @@ one style sheet for all webpages it is.*/
 #os_config_table {
   width: 200px;
 }
+
+/*stuff specific to networks.html*/
+
+
+
 

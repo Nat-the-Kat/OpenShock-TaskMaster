@@ -4,7 +4,7 @@
     <title>TaskMaster task management panel</title>
     <link rel="stylesheet" href="i_hope_this_looks_decent.css">
   </head>
-  <body>
+  <body onload="load_from_ram()">
     <nav>
       <a href="index.html">index</a>
       <a href="config.html">configuration</a>
@@ -13,8 +13,7 @@
     </nav>
     <h1>task management</h1>
     <input type="button" id="from_ram" onclick="load_from_ram()" value="load task list">
-    <!--<input type="button" id="from_flash" onclick="load_from_flash()" value="show task list in flash">-->
-    <input type="button" id="from_const" onclick="load_from_const()" value="show task list in js const">
+    <!--<input type="button" id="from_const" onclick="load_from_const()" value="show task list in js const">-->
     <br>
     <br>
     <table id="task_table">
@@ -32,6 +31,7 @@
       <tbody>
       </tbody>
     </table>
+    <br>
     <input type="button" id="delete_selected" onclick="delete_task()" value="delete selected tasks">
     <input type="button" id="edit" onclick="load_selected()" value="edit/view selected task">
     <input type="button" id="new_task" onclick="new_task()" value="add task">
@@ -46,7 +46,14 @@
           <label for="task_name">task name:</label><br>
           <input type="text" id="task_name" name="name" value="null"><br>
           <label for="task_type">task type:</label><br>
-          <input type="number" id="task_type" name="type" min="1" max="3" value="1" onchange="change_tasks_type()"><br>
+          <div class="input_container">
+          <input type="number" id="task_type" name="type" min="1" max="3" value="1" onchange="change_tasks_type()">
+          <div class="help_text">
+            type 1: once a day, at specific time.<br>
+            type 2: same as type 1, but it has a time window before the warning (or punishment, if there is no warning) inside which the task can be completed.<br>
+            type 3: multiple times per day, repeating at specific interval between start and end times.
+          </div>
+        </div><br>
           <label for="can_punish">is there a punishment?</label><br>
           <select id="can_punish" name="type" onchange="update_editor_punish()">
             <option value="false">false</option>
@@ -63,48 +70,120 @@
             <option value="true">true</option>
           </select><br>
           <label for="reward_message">reward message:</label><br>
-          <input type="text" id="reward_message" value="null" disabled><br>
+          <div class="input_container">
+          <input type="text" id="reward_message" value="null" disabled>
+          <div class="help_text">
+            message that is displayed on thde oled (if enabled).
+          </div>
+        </div><br>
           <label for="gpio">gpio:</label><br>
-          <input type="number" id="gpio" min="0" max="24" value="0"><br>
+          <div class="input_container">
+            <input type="number" id="gpio" min="0" max="24" value="0">
+            <div class="help_text">
+              gpio pin used to call off the task.
+            </div>
+          </div>
           <h4>type specific settings</h4>
           <label for="start_time">start time:</label><br>
-          <input type="text" id="start_time" value="null" disabled><br>
+          <div class="input_container">
+            <input type="text" id="start_time" value="null" disabled><br>
+            <div class="help_text">
+              when the first interval of the task will start at.
+            </div>
+          </div><br>
           <label for="end_time">end time:</label><br>
-          <input type="text" id="end_time" value="null" disabled><br>
+          <div class="input_container">
+            <input type="text" id="end_time" value="null" disabled><br>
+            <div class="help_text">
+              when the last interval of the task will end at.
+            </div>
+          </div><br>
           <label for="interval_time">interval length:</label><br>
-          <input type="text" id="interval_time" value="null" disabled><br>
+          <div class="input_container">
+            <input type="text" id="interval_time" value="null" disabled><br>
+            <div class="help_text">
+              how long each interval of the task is.
+            </div>
+          </div><br>
           <label for="window_time">window length:</label><br>
-          <input type="text" id="window_time" value="null" disabled><br>
+          <div class="input_container">
+            <input type="text" id="window_time" value="null" disabled><br>
+            <div class="help_text">
+              how long before the punishment (or warning, if there is one) the task can be completed
+            </div>
+          </div><br>
           <h4>warning settings</h4>
           <label for="warning_time">warning time:</label><br>
-          <input type="text" id="warning_time" size="9" value="null" disabled><br>
+          <div class="input_container">
+            <input type="text" id="warning_time" value="null" disabled><br>
+            <div class="help_text">
+              what time the warning takes place. note: for task type 3, this value is how long after the start of each
+              interval does the warning take place.
+            </div>
+          </div><br>
           <label for="warning_intensity">warning intensity:</label><br>
+          <div class="input_container">
           <input type="number" id="warning_intensity" min="0" max="100" value="0" disabled><br>
+          <div class="help_text">
+            the intensity of the shock (0-100).
+          </div>
+        </div><br>
           <label for="warning_type">warning type:</label><br>
           <select id="warning_type" disabled>
             <option value="Sound">Sound</option>
             <option value="Vibrate">Vibrate</option>
             <option value="Shock">Shock</option>
           </select><br>
-          <label for="warning_duration">warning duration (in ms):</label><br>
+          <label for="warning_duration">warning duration:</label><br>
+          <div class="input_container">
           <input type="number" id="warning_duration" min="300" max="30000" value="1000" disabled><br>
+          <div class="help_text">
+            this value is in ms (1/1000th of a second)
+          </div>
+        </div><br>
           <label for="warning_message">warning message:</label><br>
-          <input type="text" id="warning_message" size="9" value="null" disabled><br>
+          <div class="input_container">
+            <input type="text" id="warning_message" size="9" value="null" disabled><br><br>
+            <div class="help_text">
+              message that is displayed on screen when the warning is triggered. it is also sent to the shockers log.
+            </div>
+          </div><br>
           <h4>punishment settings</h4>
           <label for="punish_time">punishment time:</label><br>
-          <input type="text" id="punish_time" size="9" value="null" disabled><br>
+          <div class="input_container">
+            <input type="text" id="punish_time" value="null" disabled><br>
+            <div class="help_text">
+              what time the punishment takes place. note: for task type 3, this value is how long after the start of each
+              interval does the punishment take place.
+            </div>
+          </div><br>
           <label for="punish_intensity">punishment intensity:</label><br>
+          <div class="input_container">
           <input type="number" id="punish_intensity" min="0" max="100" value="0" disabled><br>
+          <div class="help_text">
+            the intensity of the shock (0-100).
+          </div>
+        </div><br>
           <label for="punish_type">punishment type:</label><br>
           <select id="punish_type" disabled>
             <option value="Sound">Sound</option>
             <option value="Vibrate">Vibrate</option>
             <option value="Shock">Shock</option>
           </select><br>
-          <label for="punish_duration">warning duration (in ms):</label><br>
+          <label for="punish_duration">punishment duration:</label><br>
+          <div class="input_container">
           <input type="number" id="punish_duration" min="300" max="30000" value="1000" disabled><br>
+          <div class="help_text">
+            this value is in ms (1/1000th of a second)
+          </div>
+        </div><br>
           <label for="punish_message">punishment message:</label><br>
-          <input type="text" id="punish_message" size="9" value="null" disabled><br><br>
+          <div class="input_container">
+            <input type="text" id="punish_message" size="9" value="null" disabled><br><br>
+            <div class="help_text">
+              message that is diplayed on screen when the punishment is triggered. it is also sent to the shockers log.
+            </div>
+          </div><br>
           <input type="button" id="cancel" value="cancel" onclick="hide_editor()">
           <input type="button" id="confirm" value="accept" onclick="on_accept()"><br>
         </form>
