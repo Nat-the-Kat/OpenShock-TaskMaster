@@ -11,16 +11,12 @@ using namespace task_master;
     
     wifi_configs.clear();
     retry_count = max_retry_count;
-    //File wifi_file = LittleFS.open("wifi.json", "r");
-    bp(1);
     if(!LittleFS.exists("wifi.json")){
-      bp(2);
       Serial.println("no wifi list detected! starting configuration network!");
       start_config_ap();
     } else {
-      bp(3);
       read_from_file();
-      Serial.println(attempt_connection());
+      attempt_connection();
     }
   }
 
