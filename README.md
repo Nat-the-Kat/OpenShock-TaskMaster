@@ -35,7 +35,7 @@ please feel free to submit pull requests, i just ask that you follow the challen
 
 * Earle F. Philhower, III (creator and maintainer of the [arduino-pico core](https://github.com/earlephilhower/arduino-pico))
 * Maximilian Gerhardt (for creating the [arduino-pico platform.io integration](https://github.com/maxgerhardt/platform-raspberrypi/tree/develop))
-* my wonderful partner (for inspiring me to this project, encouraging me to not give up (even though i really wanted to a couple times), and supporting this endeavor. love you hon!)
+* my wonderful partner (for inspiring me to do this project, encouraging me to not give up (even though i really wanted to a couple times), and supporting this endeavor. love you hon!)
 * a small handfull of people (leaving them unnamed until i get the courage to ask if its ok to name them) on the OpenShock discord server (for thinking this was a cool idea when i was extremely nervous about releasing it) 
 
 ## **attribution/license**
