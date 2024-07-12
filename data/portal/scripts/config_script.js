@@ -92,7 +92,7 @@ function update_override(){
 }
 
 function enable_all(){
-  var inputs = config_body.getElementsByTagName("input");
+  var inputs = config_form.elements;
   can_override.disabled = false;
   for(var i = 0; i<inputs.length;i++){
     inputs[i].disabled = false;

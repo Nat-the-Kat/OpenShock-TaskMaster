@@ -4,7 +4,7 @@
 using namespace task_master;
 
 void web_server::fetch_jquery(){
-  File jquery_file = LittleFS.open("/portal/scripts/jquery-3.3.1.min.js", "r");
+  File jquery_file = LittleFS.open("/portal/scripts/jquery-3.3.1.min.js.gz", "r");
   web_server::server.streamFile(jquery_file,"text/javascript",200);
   jquery_file.close(); 
 }
