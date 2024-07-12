@@ -1,3 +1,6 @@
+#include <FreeRTOS.h>
+#include <task.h>
+#include <semphr.h>
 #include <Arduino.h>
 #include "command_parser.h"
 #include <oled.h>
@@ -10,12 +13,12 @@
 
 using namespace task_master;
 
-  bool frame_callback(repeating_timer* t);
-
+  void update_time(void *param);
+  void loop_1(void *param);
+  void webserver_loop(void *param);
 
   void setup() {
     //interrupts
-    rp2040.idleOtherCore();
     Serial.begin(115200);
 
     //while (!Serial);
@@ -39,34 +42,56 @@ using namespace task_master;
 
     Serial.println("Ready to receive commands...");
     digitalWrite(LED_BUILTIN,HIGH);
-    rp2040.resumeOtherCore();
+
+    xTaskCreateAffinitySet(webserver_loop, "webserver_loop", 4096, nullptr,1,0b1,nullptr);
   }
 
-  void loop() {
-    w_manager.check_connection();  
-    web_server::server.handleClient();
+  //core0's only job
+  void webserver_loop(void *param) {
+    while(true){
+      w_manager.check_connection();  
+      web_server::server.handleClient();
+      vTaskDelay(1);
+    }
   }
+
+  void loop(){
+    vTaskDelete(nullptr); //bye-bye!!
+  }
+
+  
 
   void setup1(){
     oled.init(20,21);
-    oled.set_frame_callback(250,&frame_callback);
-
+    xTaskCreateAffinitySet(update_time, "update_time", 256, nullptr,1,0b10,nullptr);
+    xTaskCreateAffinitySet(loop_1, "loop_1", 1024, nullptr,1,0b10,nullptr);
   }
 
   void loop1(){
+    vTaskDelete(nullptr); //bye-bye!!
+  }
+
+
+  void loop_1(void *param){
+    while(true){
     if(Serial.available() > 0) {
       parse_serial();
     }
     manager.check_tasks();
+    vTaskDelay(100);
+    }
+
   }
 
-  bool frame_callback(repeating_timer* t){
-    oled.load_font(font16);
-    oled.cursor_pos(0, 0);
-    tm temp;
-    time_t now = time(nullptr); 
-    localtime_r(&now, &temp); //this doesn't actually convert to local time, as this time library doesn't appear to have a way to set the timezone.... :(
-    current_time = tod(temp) + timezone;
-    oled.write_time_16(current_time, true);
-    return true;
+  void update_time(void *param){
+    while(true){
+      oled.load_font(font16);
+      oled.cursor_pos(0, 0);
+      tm temp;
+      time_t now = time(nullptr); 
+      localtime_r(&now, &temp); //this doesn't actually convert to local time, as this time library doesn't appear to have a way to set the timezone.... :(
+      current_time = tod(temp) + timezone;
+      oled.write_time_16(current_time, true);
+      vTaskDelay(250);
+    }
   }

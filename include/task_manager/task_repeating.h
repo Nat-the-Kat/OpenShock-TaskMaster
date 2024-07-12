@@ -8,10 +8,6 @@ namespace task_master{
       tod start;
       tod end;
       tod interval;
-      tod next_start;
-      tod next_time;
-      tod next_warn;
-      tod next_punish;
       bool interval_active = true;
 
       task_repeat();
@@ -19,6 +15,12 @@ namespace task_master{
       virtual void print()override;
       virtual JsonDocument to_json()override;
       virtual void check()override;
+      virtual void disable()override;
+    private:
+      tod next_start;
+      tod next_time;
+      tod next_warn;
+      tod next_punish;
   };
 }
 

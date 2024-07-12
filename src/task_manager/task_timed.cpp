@@ -3,7 +3,7 @@
 
 using namespace task_master;
   void task_timed::print(){
-    char buffer[100];
+    char buffer[256];
     sprintf(buffer, "task name: %s]\ntype: %d\ngpio: %d\nactive: %d\ncan_warn: %d\ncan_punish: %d\ncan_reward: %d", name.c_str(), type, gpio, active, can_warn, can_punish, can_reward);
     Serial.println(buffer);
     Serial.print("window: "); window.print();
@@ -138,4 +138,8 @@ using namespace task_master;
       if(!can_punish) active = false; //if there is no punishment, then this task is done
       oled.timed_clear(conf.message_time*1000);
     }
+  }
+
+  void task_timed::disable(){
+    active = false;
   }

@@ -116,3 +116,7 @@ using namespace task_master;
       oled.timed_clear(conf.message_time*1000);
     }
   }
+
+  void task::disable(){
+    active = false;
+  }

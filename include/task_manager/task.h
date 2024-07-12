@@ -27,6 +27,7 @@ namespace task_master{
       virtual void print();
       virtual JsonDocument to_json();
       virtual void check();
+      virtual void disable();
       
 
       task();

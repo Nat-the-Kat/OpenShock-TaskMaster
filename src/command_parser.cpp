@@ -1,3 +1,6 @@
+#include <FreeRTOS.h>
+#include <task.h>
+#include <semphr.h>
 #include "command_parser.h"
 #include "wifi_manager/wifi_manager.h"
 #include "task_manager/task_manager.h"
@@ -8,8 +11,9 @@
 #include <tod.h>
 #include <LittleFS.h>
 #include <oled.h>
+#include <map>
 
-
+ std::map<eTaskState, const char *> eTaskStateName { {eReady, "Ready"}, { eRunning, "Running" }, {eBlocked, "Blocked"}, {eSuspended, "Suspended"}, {eDeleted, "Deleted"} };
 //very simple serial command parser to allow modifying the configuration
 
 //this file is an unholy mess, it desperately needs cleanup. there is almost certainly a way better way to do this.
@@ -49,7 +53,16 @@
       Serial.println("v0.0.0");
 
     }else if(strncmp(input.c_str(), "test", 4) == 0){
-
+          int tasks = uxTaskGetNumberOfTasks();
+    TaskStatus_t *pxTaskStatusArray = new TaskStatus_t[tasks];
+    unsigned long runtime;
+    tasks = uxTaskGetSystemState( pxTaskStatusArray, tasks, &runtime );
+    Serial.printf("# Tasks: %d\n", tasks);
+    Serial.println("ID, NAME, STATE, PRIO, CYCLES");
+    for (int i=0; i < tasks; i++) {
+      Serial.printf("%d: %-16s %-10s %d %lu\n", i, pxTaskStatusArray[i].pcTaskName, eTaskStateName[pxTaskStatusArray[i].eCurrentState], (int)pxTaskStatusArray[i].uxCurrentPriority, pxTaskStatusArray[i].ulRunTimeCounter);
+    }
+    delete[] pxTaskStatusArray;
 
     }else if(strncmp(input.c_str(), "write_tasks", 11) == 0){
       manager.write_to_file();

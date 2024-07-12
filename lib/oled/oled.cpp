@@ -74,14 +74,13 @@
 
   void ssd1306::clear(){
     write_command(0xae);
-    noInterrupts();
+    
     for(int r = 0; r < 8; r++) {
       cursor_pos(r,0);
       for(int c = 0; c < 16; c++) {  
         write_char_8(' ');
       }
     }
-    interrupts();
     write_command(0xaf);
     cursor_pos(0,0);
   }

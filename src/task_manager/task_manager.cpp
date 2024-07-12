@@ -114,7 +114,10 @@ using namespace task_master;
           oled.write_string_8("override used!");
           oled.timed_clear(conf.message_time*1000);
           conf.overrides_left--;
-
+          //actually deactivate all tasks...
+          for(task* t: task_list){
+            t->disable();
+          }
         }
       }
     }

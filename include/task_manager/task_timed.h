@@ -10,6 +10,7 @@ namespace task_master{
       virtual void print()override;
       virtual JsonDocument to_json()override;
       virtual void check()override;
+      virtual void disable()override;
     
 
 
