@@ -48,6 +48,7 @@
     write_command(0xaf);  //display on
     delay(100);
     clear();
+    in_use = false;
   }
 
   void ssd1306::load_font(const uint8_t* f){
@@ -163,6 +164,25 @@
     }
   }
   
+  bool ssd1306::check_in_use(){
+    return in_use;
+  }
+
+  void ssd1306::set_in_use(){
+    in_use = true;
+  }
+
+  void ssd1306::clear_in_use(){
+    in_use = false;
+  }
+  void ssd1306::write_string_8_at(std::string s, uint8_t r, uint8_t c){
+    set_in_use();
+    cursor_pos(r,c);
+    load_font(font8);
+    write_string_8(s);
+    clear_in_use();
+  }
+
 
 
   ssd1306 oled;

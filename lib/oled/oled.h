@@ -19,12 +19,16 @@ class ssd1306 {
     //8 pixel text functions
     void write_string_8(const char *string); 
     void write_string_8(std::string s); 
+    void write_string_8_at(std::string s, uint8_t r, uint8_t c);
     void write_time_8(tod time, bool seconds = false);
 
     //16 pixel text functions
     void write_string_16(const char *string);
     void write_string_16(std::string s);
     void write_time_16(tod time, bool seconds = false);
+    bool check_in_use();
+    void set_in_use();
+    void clear_in_use();
 
   private:
     void write_command(uint8_t c);
@@ -32,6 +36,7 @@ class ssd1306 {
     void write_char_8(uint8_t c);
     void write_char_16(char ch);
     repeating_timer frame_timer;
+    bool in_use = false;
 
     
 
