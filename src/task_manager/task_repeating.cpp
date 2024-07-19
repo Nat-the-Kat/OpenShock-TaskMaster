@@ -1,5 +1,6 @@
 #include "task_manager/task_repeating.h"
 #include "config/config.h"
+#include "debug/bp.h"
 
 using namespace task_master;
 
@@ -79,12 +80,24 @@ using namespace task_master;
     can_warn = object["can_warn"];
     can_reward = object["can_reward"];
 
+
+    if(between_inclusive(current_time,start,end)){
+      while(next_time < current_time){
+        next_time = next_time + interval;
+      }
+      if(next_time + interval > end){ //the next interval is the last
+        next_time = end;
+      }
+    }else{ //we are outside the running time of the task
+      next_time = start + interval;
+    }
+
     if(can_punish){
       JsonArray punish_array = object["punish_time"];
       punish_time = tod(punish_array);
       JsonObject task_punish = object["punishment"];
       punish = openshock::control(task_punish);
-      next_punish = start + punish_time;
+      next_punish = (next_time - interval) + punish_time;
     }
 
     if(can_warn){
@@ -92,7 +105,7 @@ using namespace task_master;
       warn_time = tod(warn_array);
       JsonObject task_warn = object["warning"];
       warning = openshock::control(task_warn);
-      next_warn =  start + warn_time;
+      next_warn =  (next_time - interval) + warn_time;
     }
 
     if(can_reward) {
@@ -100,12 +113,13 @@ using namespace task_master;
     } 
     gpio = object["gpio"];
     
-    next_time = start + interval;
     
+    interval_active = true;
     active = true;
   }
 
   //i realized im doing a lot of if(can_warn) and if(can_punish), seems inefficient. maybe there is a better way?
+  //also this is extremely messy, im sure there is a way to do this in a much cleaner way.
   void task_repeat::check(){
     if(current_time == next_time && current_time != end){ //its time to recalculate next_time
       if(next_time + interval > end){ //the next interval is the last
@@ -164,7 +178,6 @@ using namespace task_master;
       oled.timed_clear(conf.message_time*1000);
     }
   }
-
 
   void task_repeat::disable(){
     active = false;

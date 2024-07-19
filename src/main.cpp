@@ -11,6 +11,7 @@
 using namespace task_master;
 
   bool update_time(repeating_timer* t);
+  bool wait = true;
 
   void setup() {
     Serial.begin(115200);
@@ -25,18 +26,18 @@ using namespace task_master;
     }
 
     conf.init();
-    manager.init();
     w_manager.init();
 
     if(w_manager.attempt_connection()){
       NTP.begin(conf.ntp_server.c_str());
       NTP.waitSet();
     }
-
+    manager.init();   //initialize this after setting the time, so any repeating tasks can be properly setup
     web_server::init();
 
     Serial.println("Ready to receive commands...");
     digitalWrite(LED_BUILTIN,HIGH);
+    wait = false;
   }
 
   void loop(){
@@ -48,6 +49,7 @@ using namespace task_master;
   void setup1(){
     oled.init(20,21);
     oled.set_frame_callback(250,update_time);
+    while(wait);
   }
 
   void loop1(){
@@ -55,9 +57,10 @@ using namespace task_master;
       parse_serial();
     }
     manager.check_tasks();
+    delay(250);
   }
 
- bool update_time(repeating_timer* t){
+  bool update_time(repeating_timer* t){
     if(!oled.check_in_use()){ // if the oled isn't being written to, proceed.
       oled.load_font(font16);
       oled.cursor_pos(0, 0);
