@@ -19,8 +19,6 @@ namespace task_master{
       int dow = 0;
       int message_time = 5;
       
-      bool first_boot = false;
-
       void read_from_file(); //read config.json into ram
       void write_to_file(); //write config in ram to config.json
       void print(); //print config info in ram to serial terminal
@@ -30,6 +28,8 @@ namespace task_master{
       std::string write_to_string();
 
     private:
+      std::string timezone_name;
+      std::string timezone; 
       void read_from_stream(Stream &s);
       
   };

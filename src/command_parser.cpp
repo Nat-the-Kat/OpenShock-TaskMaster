@@ -1,15 +1,16 @@
-//#include <FreeRTOS.h>
-#include "command_parser.h"
-#include "wifi_manager/wifi_manager.h"
-#include "task_manager/task_manager.h"
-#include "config/config.h"
-#include "helpers/filesystem.h"
-#include <pico/stdlib.h>
-#include "helpers/stream_to_string.h"
-#include <tod.h>
 #include <LittleFS.h>
 #include <oled.h>
-#include <map>
+#include <pico/stdlib.h>
+#include <tod.h>
+
+#include "command_parser.h"
+#include "config/config.h"
+#include "helpers/filesystem.h"
+#include "helpers/stream_to_string.h"
+#include "task_manager/task_manager.h"
+#include "wifi_manager/wifi_manager.h"
+
+#define version_string "v0.1.0"
 
 //very simple serial command parser to allow modifying the configuration
 
@@ -47,7 +48,7 @@
       Serial.print("used heap:"); Serial.println(rp2040.getUsedHeap());
 
     }else if(strncmp(input.c_str(), "ver", 3) == 0){
-      Serial.println("v0.0.0");
+      Serial.println(version_string);
 
     }else if(strncmp(input.c_str(), "test", 4) == 0){
 
@@ -93,9 +94,6 @@
 
     }else if(strncmp(input.c_str(), "add_networks", 12) == 0){
       w_manager.read_from_serial();
-
-    }else if(strncmp(input.c_str(), "clear_networks", 14) == 0){
-      //w_manager.clear_networks();
 
     }else if(strncmp(input.c_str(), "delete_network ", 15) == 0){
       input.erase(input.begin(),input.begin() + 15);
@@ -154,7 +152,7 @@
     }else if(strncmp(s.c_str(), " misc", 5) == 0){
       Serial.println("misc commands:");
       Serial.println("factory_reset           delete config.json,tasks.json and wifi.json, and create new ones with default values\n");
-      //Serial.println("help                you just used it, you silly bean :P");
+      //Serial.println("help                  you just used it, you silly bean :P");
       Serial.println("reboot                  reboot the mcu");
       Serial.println("ver                     returns firmware version.");
     }else{

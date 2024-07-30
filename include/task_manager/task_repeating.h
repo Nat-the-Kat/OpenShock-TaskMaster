@@ -21,6 +21,9 @@ namespace task_master{
       tod next_time;
       tod next_warn;
       tod next_punish;
+
+      void calc_next_time(tod time);
+
   };
 }
 

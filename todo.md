@@ -1,4 +1,4 @@
-## stuff left to do before merge v0.0.1
+## stuff left to do before merge v0.1.0
 
 * ~~design webpages for configuring.~~
 * ~~send configuration data from website back to pico.~~
@@ -19,7 +19,6 @@
 * add a webpage for requesting an OpenShock api key.
 * compress webpage files to save space in flash.
 * ability to set certain tasks to only run on certain days of the week/certain days of the month
-* support for daylight saving time (if applicable in your part of the world)
 * multiple tasks using same io pin.
 * custom pcb and 3d printed enclosure. no more protoboard.
 
@@ -27,3 +26,5 @@
 
 * google calendar support (need to look into more).
 * either port to a different platform (like esp32), or make the jump to fully using the pico sdk (limits portability). either way ditch arduino. 
+* a small interpreter (probably lua, although if i want to be really weird i could do BASIC...) to allow for programming task triggers (i.e. only count a task as complete if a sensor reads a certain value) 
+* create a file format for more compactly storing config and task data than json.

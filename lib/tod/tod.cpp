@@ -1,5 +1,5 @@
 #include "tod.h"
-
+#include <time.h>
 
   void tod::print(){
     char buffer[30];
@@ -164,9 +164,6 @@
     if(temp_current >= start && temp_current <= temp_end){
       return true;
     }
-
-
-
     return false;
   }
 
@@ -185,6 +182,13 @@
     }
     return false;
   }
-  
-  tod timezone;
+
+  void update_time(){
+    tm temp;
+    time_t now = time(nullptr); 
+    localtime_r(&now, &temp);
+    current_time = tod(temp);
+  }
+
   tod current_time;
+

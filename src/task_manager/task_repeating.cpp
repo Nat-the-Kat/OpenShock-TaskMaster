@@ -69,6 +69,7 @@ using namespace task_master;
 
     JsonArray start_array = object["start"];
     start = tod(start_array);
+    next_time = start;
 
     JsonArray end_array = object["end"];
     end = tod(end_array);
@@ -81,16 +82,7 @@ using namespace task_master;
     can_reward = object["can_reward"];
 
 
-    if(between_inclusive(current_time,start,end)){
-      while(next_time < current_time){
-        next_time = next_time + interval;
-      }
-      if(next_time + interval > end){ //the next interval is the last
-        next_time = end;
-      }
-    }else{ //we are outside the running time of the task
-      next_time = start + interval;
-    }
+    calc_next_time(current_time);
 
     if(can_punish){
       JsonArray punish_array = object["punish_time"];
@@ -121,6 +113,7 @@ using namespace task_master;
   //i realized im doing a lot of if(can_warn) and if(can_punish), seems inefficient. maybe there is a better way?
   //also this is extremely messy, im sure there is a way to do this in a much cleaner way.
   void task_repeat::check(){
+    
     if(current_time == next_time && current_time != end){ //its time to recalculate next_time
       if(next_time + interval > end){ //the next interval is the last
         next_time = end;
@@ -191,4 +184,32 @@ using namespace task_master;
     }
   }
 
+  void task_repeat::calc_next_time(tod time){
+
+    if(between_inclusive(time,start,end)){
+      bp(1);
+      while(next_time < time){
+        next_time = next_time + interval;
+        Serial.print("next_time = ");next_time.print();Serial.println();
+        //delay(10);
+      }
+      bp(2);
+      tod temp_end = end;
+      tod temp_current = time;
+      if(start > end){
+        temp_end.hr += 24;
+        if(time < end){
+          temp_current.hr += 24;
+        }
+      }
+      if(next_time + interval > temp_end){ //the next interval is the last
+      bp(3);
+        next_time = end;
+      }
+    }else{ //we are outside the running time of the task
+    
+     bp(4);
+      next_time = start + interval;
+    }
+  }
 

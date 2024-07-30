@@ -1,1 +1,1 @@
-{"config":{"ntp_server":"pool.ntp.org","os_config":{"server":"api.openshock.app","api_key":"null","shocker":"null"},"can_override":true,"override_pin":10,"num_overrides":1,"reset_day":0,"message_time":5,"reset_time":[0,0,0],"timezone":[-7,0,0]}}
+{"config":{"ntp_server":"pool.ntp.org","os_config":{"server":"api.openshock.app","api_key":"null","shocker":"null"},"can_override":true,"override_pin":10,"num_overrides":1,"reset_day":0,"message_time":5,"reset_time":[0,0,0],"timezone_name":"America/Los_Angeles","timezone":"PST8PDT,M3.2.0,M11.1.0"}}

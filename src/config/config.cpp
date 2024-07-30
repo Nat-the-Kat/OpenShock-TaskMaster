@@ -14,6 +14,10 @@
       config_file.close();
     }
     read_from_file();
+    //why this works when the first time i tried the exact same code it failed will forever remain a mystery to me.
+    setenv("TZ",timezone.c_str(),1);
+    tzset();
+
     tm temp;
     time_t now = time(nullptr); 
     localtime_r(&now, &temp); 
@@ -50,7 +54,8 @@
     Serial.print("message_time: ");Serial.println(message_time);
     Serial.print("dow: ");Serial.println(dow);
     Serial.print("reset_time: ");reset_time.print();
-    Serial.print("timezone: ");timezone.print();
+    Serial.print("timezone_name: ");Serial.println(timezone_name.c_str());
+    Serial.print("timezone: ");Serial.println(timezone.c_str());
   }
 
 
@@ -85,8 +90,8 @@
 
       JsonArray config_reset_time = config["reset_time"];
       reset_time = tod(config_reset_time);
-      JsonArray config_timezone = config["timezone"];
-      timezone = tod(config_timezone);
+      timezone_name = std::string(config["timezone_name"]);
+      timezone = std::string(config["timezone"]);
     }
   }
 
@@ -106,7 +111,9 @@
     
     config["message_time"] = message_time;
     config["reset_time"] = reset_time.to_json();
-    config["timezone"] = timezone.to_json();
+    config["timezone_name"] = timezone_name.c_str();
+    config["timezone"] = timezone.c_str();
+
 
     doc.shrinkToFit();
     serializeJson(doc, out);

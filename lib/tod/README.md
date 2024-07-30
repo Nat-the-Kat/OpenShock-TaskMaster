@@ -1,1 +1,0 @@
-time&date library, written by nat_the_kat (aka nhryciw1)

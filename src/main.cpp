@@ -1,12 +1,13 @@
 #include <Arduino.h>
-#include "command_parser.h"
+#include <LittleFS.h>
 #include <oled.h>
 #include <WiFi.h>
-#include "web_server/web_server.h"
+
+#include "command_parser.h"
 #include "config/config.h"
-#include "wifi_manager/wifi_manager.h"
 #include "task_manager/task_manager.h"
-#include <LittleFS.h>
+#include "web_server/web_server.h"
+#include "wifi_manager/wifi_manager.h"
 
 using namespace task_master;
 
@@ -30,9 +31,15 @@ using namespace task_master;
 
     if(w_manager.attempt_connection()){
       NTP.begin(conf.ntp_server.c_str());
-      NTP.waitSet();
+      time_t now = time(nullptr);
+      while (now < 8 * 3600 * 2) {
+        delay(500);
+        Serial.print(".");
+        now = time(nullptr);
+      }
     }
-    manager.init();   //initialize this after setting the time, so any repeating tasks can be properly setup
+    update_time();
+    manager.init(); //initialize this after setting the time, so any repeating tasks can be properly setup
     web_server::init();
 
     Serial.println("Ready to receive commands...");
@@ -49,7 +56,9 @@ using namespace task_master;
   void setup1(){
     oled.init(20,21);
     oled.set_frame_callback(250,update_time);
+    //wait until core0 has finish setup, yes this is crude but rp2040.idleOtherCore() doesn't play well with LittleFS.
     while(wait);
+    
   }
 
   void loop1(){
@@ -64,10 +73,7 @@ using namespace task_master;
     if(!oled.check_in_use()){ // if the oled isn't being written to, proceed.
       oled.load_font(font16);
       oled.cursor_pos(0, 0);
-      tm temp;
-      time_t now = time(nullptr); 
-      localtime_r(&now, &temp); //this doesn't actually convert to local time, as this time library doesn't appear to have a way to set the timezone.... :(
-      current_time = tod(temp) + timezone;
+      update_time();
       oled.write_time_16(current_time, true);
     }
     return true;

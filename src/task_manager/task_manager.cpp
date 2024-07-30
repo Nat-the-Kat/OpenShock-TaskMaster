@@ -108,10 +108,7 @@ using namespace task_master;
       if(digitalRead(conf.override_pin) && conf.overrides_left != 0){
         delay(500);  //really dumb software debounce
         if(digitalRead(conf.override_pin)){ //if still high, deactivate task
-          //make sure that if we need to display text, the correct font is loaded, because if forgot the frame callback can happen in the middle of this and change the font
-          oled.load_font(font8);
-          oled.cursor_pos(3,0);
-          oled.write_string_8("override used!");
+          oled.write_string_8_at("override used!",3,0);
           oled.timed_clear(conf.message_time*1000);
           conf.overrides_left--;
           //actually deactivate all tasks...
