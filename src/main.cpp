@@ -16,9 +16,9 @@ using namespace task_master;
 
   void setup() {
     Serial.begin(115200);
-    #ifdef wait_for_serial
+    //#ifdef wait_for_serial
     while (!Serial);
-    #endif
+    //#endif
     pinMode(LED_BUILTIN,OUTPUT);
     digitalWrite(LED_BUILTIN,LOW);
 

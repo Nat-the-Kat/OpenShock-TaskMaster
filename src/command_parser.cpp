@@ -51,6 +51,16 @@
       Serial.println(version_string);
 
     }else if(strncmp(input.c_str(), "test", 4) == 0){
+      if(between_inclusive(tod(23,3,0),tod(9,0,0),tod(23,0,0))){
+        Serial.println(1);
+      }else{
+        Serial.println(0);
+      }
+      if(between_inclusive(tod(1,0,0),tod(9,0,0),tod(1,0,0))){
+        Serial.println(1);
+      }else{
+        Serial.println(0);
+      }
 
     }else if(strncmp(input.c_str(), "write_tasks", 11) == 0){
       manager.write_to_file();

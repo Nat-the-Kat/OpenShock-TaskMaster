@@ -188,7 +188,7 @@ using namespace task_master;
 
     if(between_inclusive(time,start,end)){
       bp(1);
-      while(next_time < time){
+      while(between_inclusive(next_time,start,end)){
         next_time = next_time + interval;
         Serial.print("next_time = ");next_time.print();Serial.println();
         //delay(10);

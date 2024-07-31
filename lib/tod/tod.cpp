@@ -161,6 +161,7 @@
         temp_current.hr += 24; // if i did this math right, 
       }
     }
+
     if(temp_current >= start && temp_current <= temp_end){
       return true;
     }
@@ -173,9 +174,9 @@
     tod temp_current = c_time;
     if(start > end){
       temp_end.hr += 24;
-      if(c_time < end){
-        temp_current.hr += 24;
-      }
+    }
+    if(c_time < end){
+      temp_current.hr += 24;
     }
     if(temp_current > start && temp_current < temp_end){
       return true;
