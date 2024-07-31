@@ -143,8 +143,8 @@ one style sheet for all webpages it is.*/
 }
 
 /*stuff specific to config.html*/
-#config_table {
-  width: 550px;
+#timezone, #shocker_id, #api_key, #os_server{
+  width: 160px;
 }
 
 #os_config_table {

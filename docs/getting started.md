@@ -4,11 +4,9 @@
 
 1. after opening this project in VS Code, in the PlatformIO menu, go to "project tasks>pico>general" and click "Upload". (please note, if you are flashing a brand new pico, make sure to hold down the bootsel button when plugging it in to put it in firmware upload mode)
 
-2. once the firmware has been succesfully uploaded, navigate to "project tasks>pico>platform" and click "Build Filesystem Image".
+2. once that is done, in the same menu click "Upload Filesystem Image".
 
-3. once that is done, in the same menu click "Upload Filesystem Image".
-
-4. you should be good to begin configuring.
+3. you should be good to begin configuring.
 
 ## **initial connection and configuring**
 

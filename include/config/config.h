@@ -29,7 +29,7 @@ namespace task_master{
 
     private:
       std::string timezone_name;
-      std::string timezone; 
+      std::string timezone_rule; 
       void read_from_stream(Stream &s);
       
   };

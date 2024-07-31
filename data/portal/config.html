@@ -4,7 +4,7 @@
     <title>TaskMaster config panel</title>
     <link rel="stylesheet" href="i_hope_this_looks_decent.css">
   </head>
-  <body onload="load_from_ram()">
+  <body onload="on_load()">
     <nav>
       <a href="index.html">index</a>
       <a href="config.html">configuration</a>
@@ -17,7 +17,6 @@
     <br>
     <br>
     <form id="config_form">
-    
       <label for="ntp_server">ntp server:</label><br>
       <div class="input_container">
       <input type="text" id="ntp_server" value="null"><br>
@@ -74,9 +73,11 @@
       </div><br>
       <label for="timezone">timezone:</label><br>
       <div class="input_container">
-        <input type="text" id="timezone" value="null"><br>
+        <input type="text" id="timezone" list="zones" value="null" onchange="zone_changed()"><br>
+        <datalist id="zones">
+      </datalist>
         <div class="help_text">
-          time offset from UTC.
+          name of the timezone you want used.
         </div>
       </div><br>
     
@@ -108,5 +109,6 @@
     <script src="./scripts/jquery-3.3.1.min.js"></script>
     <script src="./scripts/config_script.js"></script>
     <script src="./scripts/common.js"></script>
+    <script src="./scripts/tz_text.js"></script>
   </body>
 </html>
