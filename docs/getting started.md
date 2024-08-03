@@ -1,19 +1,23 @@
-# **Getting started**
+# **getting started**
 
-1. after uploading the firmware, plug the device into a free USB port and open up a serial monitor on whatever port the pico is using. (I used [this one](https://serial.huhn.me))
+## **uploading the firmware**
 
-2. after opening the serial monitor you should be greeted with several messages telling you that its trying to connect, before finally spitting out "ready to receive commands..."
-it is now ready to be configured.
+1. after opening this project in VS Code, in the PlatformIO menu, go to "project tasks>pico>general" and click "Upload". (please note, if you are flashing a brand new pico, make sure to hold down the bootsel button when plugging it in to put it in firmware upload mode)
 
-3. type in "add_networks" and hit enter.
+2. once that is done, go to "project tasks>pico>platform" and click "Upload Filesystem Image".
 
-4. it should say "waiting for json string..."
-now you can paste in the contents of a wifi.json file (see [this](wifi.md) for more details)
+3. you should be good to begin configuring.
 
-Note 1: for this document (and all json documents used to configure this project) need to be minified, ie no newline characters or it will complain that its an invalid document. spaces are ok.
+## **initial connection and configuring**
 
-5. type in the command "write_networks". this writes the configuration to flash.
+1. once the onboard led on the pico turns on (if it has one), a wifi network called "TaskMaster" should appear. connect to that network.
 
-repeat steps 3,4 & 5 with the commands "edit_config" ("write_config" to save) and "add_tasks" ("write_tasks" to save). refer to [this for info on making a config file](config.md) and [this for info on making a tasks file](tasks.md)
+2. after connecting, use a web browser to navigate to http://192.168.42.1
 
-Note 2: you can use the view commands ("view_config","view_tasks", and "view_networks") to check your work. you can remove a bad network config using "delete_network 'ssid'" (ssid doesn't need to be in single quotes). badly configured tasks can be removed using "remove_task 'task'" (task is the task_name, it doesn't need to be in single quotes). the config can only be edited with "edit_config"
+note 1: it is suggested that you start with the wifi list. after entering the details of the wifi network(s) that it will connect to, you can reboot it by simply unplugging it, or use a serial monitor and type in the command "reboot". (make sure you save the network list to flash, if you have a serial monitor open it should say "network list updated")
+
+
+note 2: after rebooting if it finds a network you will have to navigate to its local ip address to continue configuring. (you can find this by using the command "ip_address" in the serial terminal)
+
+the various configuration pages should be relatively easy to understand what everything does? i think?
+ 

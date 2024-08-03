@@ -1,105 +1,80 @@
 #include <Arduino.h>
-#include "command_parser.h"
+#include <LittleFS.h>
 #include <oled.h>
 #include <WiFi.h>
-#include <HTTPClient.h>
-#include "debug/bp.h"
+
+#include "command_parser.h"
+#include "config/config.h"
+#include "task_manager/task_manager.h"
+#include "web_server/web_server.h"
+#include "wifi_manager/wifi_manager.h"
 
 using namespace task_master;
 
-  config* conf = new config;
-  task_manager* manager = new task_manager;
-  wifi_manager* w_manager = new wifi_manager;
-
-  bool wifi = true;
-
-  bool frame_callback(repeating_timer* t);
-
+  bool update_time(repeating_timer* t);
+  bool wait = true;
 
   void setup() {
     Serial.begin(115200);
-    //while (!Serial);
+    #ifdef wait_for_serial
+    while (!Serial);
+    #endif
+    pinMode(LED_BUILTIN,OUTPUT);
+    digitalWrite(LED_BUILTIN,LOW);
 
     if(!LittleFS.begin()){
-      Serial.println("Failed to mount file system, rebooting...");
-      delay(2000);
       rp2040.reboot();
     }
 
-    conf->init();
-    manager->init();
-    w_manager->init();
+    conf.init();
+    w_manager.init();
 
-    int tries = 3;
-    
-    while(tries > 0){
-      Serial.println("trying to connect...");
-      if(w_manager->search_for_network()){
-        break;
+    if(w_manager.attempt_connection()){
+      NTP.begin(conf.ntp_server.c_str());
+      time_t now = time(nullptr);
+      while (now < 8 * 3600 * 2) {
+        delay(500);
+        Serial.print(".");
+        now = time(nullptr);
       }
-      tries--;
     }
-
-    if(tries == 0){
-      Serial.println("no known wifi networks have been found, please modify network config!!!");
-      wifi = false;
-    }
-
-    if(wifi){
-      Serial.print("Connected! IP address: ");
-      Serial.println(WiFi.localIP());
-
-      NTP.begin(conf->ntp_server.c_str());
-      NTP.waitSet();
-    }
+    update_time();
+    manager.init(); //initialize this after setting the time, so any repeating tasks can be properly setup
+    web_server::init();
 
     Serial.println("Ready to receive commands...");
+    digitalWrite(LED_BUILTIN,HIGH);
+    wait = false;
+  }
+
+  void loop(){
+    w_manager.check_connection();  
+    web_server::server.handleClient();
+    delay(5);
+  }
+
+  void setup1(){
+    oled.init(20,21);
+    oled.set_frame_callback(250,update_time);
+    //wait until core0 has finish setup, yes this is crude but rp2040.idleOtherCore() doesn't play well with LittleFS.
+    while(wait);
     
   }
 
-  void loop() {
-    if (Serial.available() > 0) {
-      parse_serial(manager, conf, w_manager);
+  void loop1(){
+    if(Serial.available() > 0) {
+      parse_serial();
     }
-    if(wifi){
-      if(WiFi.status() != WL_CONNECTED){
-        Serial.println("wifi disconnected, searching for known networks...");
-        while(!w_manager->search_for_network());
-        Serial.print("Connected! IP address: ");
-        Serial.println(WiFi.localIP());
-        NTP.begin(conf->ntp_server.c_str());
-        NTP.waitSet();
-      }
-      manager->check_tasks(conf);
+    manager.check_tasks();
+    delay(250);
+  }
+
+  bool update_time(repeating_timer* t){
+    if(!oled.check_in_use()){ // if the oled isn't being written to, proceed.
+      oled.load_font(font16);
+      oled.cursor_pos(0, 0);
+      update_time();
+      oled.write_time_16(current_time, true);
     }
-
-  }
-
-  /*do i actually need to use the second core? no i don't. but the oled would freeze while anything was happening on the
-  serial port and i didn't like how it looked. :P
-  */
-
-  void setup1(){
-    Wire.setSDA(20);
-    Wire.setSCL(21);
-    Wire.begin();
-    oled.init();
-    oled.clear();
-    oled.set_frame_callback(250,&frame_callback);
-  }
-
-  void loop1() {
-    //while(wait); //pause the core until the config is loaded
-    //delay(100);
-  }
-
-  bool frame_callback(repeating_timer* t){
-    oled.load_font(font16);
-    oled.cursor_pos(0, 0);
-    tm temp;
-    time_t now = time(nullptr); 
-    localtime_r(&now, &temp); //this doesn't actually convert to local time, as this time library doesn't appear to have a way to set the timezone.... :(
-    current_time = tod(temp) + timezone;
-    oled.write_time_16(current_time, true);
     return true;
   }

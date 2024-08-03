@@ -1,6 +1,6 @@
 #pragma once
-#include <LittleFS.h>
+#include <string>
 
   //file operations
-  void read(const char* filename);
-  void delete_file(const char* filename);
+  void read(std::string filename);
+  void delete_file(std::string filename);

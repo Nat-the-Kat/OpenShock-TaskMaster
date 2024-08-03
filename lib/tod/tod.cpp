@@ -1,5 +1,5 @@
 #include "tod.h"
-
+#include <time.h>
 
   void tod::print(){
     char buffer[30];
@@ -16,11 +16,16 @@
   }
 
   tm tod::to_tm(){
-    tm temp;
-    temp.tm_hour = hr;
-    temp.tm_min = min;
-    temp.tm_sec = sec;
+    tm temp = {sec,min,hr,0,0,0,0,0,0};
     return temp;
+  }
+
+  time_t tod::to_time(){
+    time_t out;
+    out += (hr*3600);
+    out += (min*60);
+    out += sec;
+    return out;
   }
 
   tod::tod(){
@@ -31,6 +36,20 @@
     hr = h;
     min = m;
     sec = s;
+  }
+
+  tod::tod(time_t t, bool absolute){
+    tm temp;
+    if(absolute){
+      gmtime_r(&t,&temp);
+    }else{
+      localtime_r(&t,&temp);
+    }
+    
+    hr = temp.tm_hour;
+    min = temp.tm_min;
+    sec = temp.tm_sec;
+
   }
 
   tod::tod(tm time){
@@ -164,9 +183,6 @@
     if(temp_current >= start && temp_current <= temp_end){
       return true;
     }
-
-
-
     return false;
   }
 
@@ -185,6 +201,13 @@
     }
     return false;
   }
-  
-  tod timezone;
+
+  void update_time(){
+    tm temp;
+    time_t now = time(nullptr); 
+    localtime_r(&now, &temp);
+    current_time = tod(temp);
+  }
+
   tod current_time;
+

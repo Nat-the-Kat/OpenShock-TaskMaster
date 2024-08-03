@@ -1,18 +1,18 @@
-#include "task_manager/control.h"
+#include "control.h"
 
-using namespace task_master;
+using namespace openshock;
   void control::print(){
     char buffer[128];
-    sprintf(buffer, "strength: %u\ntype: %s\nduration: %u\nmessage: %s", strength, type.c_str(), dur, message.c_str());
+    sprintf(buffer, "intensity: %u\ntype: %s\nduration: %u\nmessage: %s", intensity, type.c_str(), duration, message.c_str());
     Serial.println(buffer);
     return;
   }
 
   JsonDocument control::to_json(){
     JsonDocument doc;
-    doc["strength"] = strength;
+    doc["intensity"] = intensity;
     doc["type"] = type.c_str();
-    doc["duration"] = dur;
+    doc["duration"] = duration;
     doc["message"] = message.c_str();
     return doc;
 
@@ -24,7 +24,7 @@ using namespace task_master;
   //json constructor
   control::control(JsonObject object){
     type = std::string(object["type"]);
-    strength = object["strength"];
-    dur = object["duration"];
+    intensity = object["intensity"];
+    duration = object["duration"];
     message = std::string(object["message"]);
   }

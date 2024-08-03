@@ -14,7 +14,11 @@
     Wire.endTransmission();
   }
 
-  void ssd1306::init(uint8_t a){
+  void ssd1306::init(int sda, int scl, uint8_t a){
+    Wire.setSDA(20);
+    Wire.setSCL(21);
+    Wire.begin();
+    i2c_set_baudrate(i2c0,100000);
     address= a;
     write_command(0xae);  //display off
     write_command(0xd5);  //set osc frequency
@@ -42,6 +46,9 @@
     write_command(0x20);  //set horizontal display mode
     write_command(0x00);
     write_command(0xaf);  //display on
+    delay(100);
+    clear();
+    in_use = false;
   }
 
   void ssd1306::load_font(const uint8_t* f){
@@ -56,10 +63,8 @@
     pos_col = col;
     uint8_t pos = font_width * col;
     write_command(0xB0 + row);  //set page
-
     /*this is the only binary arithmetic in this project. :(
-    i miss assembly... 
-    */
+    i miss assembly... */
     uint8_t l = pos & 0x0f;
     uint8_t h = (pos >> 4) & 0x0f;
     write_command(0x00 + l);  //set column lower nibble
@@ -67,6 +72,7 @@
   }
 
   void ssd1306::clear(){
+    set_in_use();
     write_command(0xae);
     for(int r = 0; r < 8; r++) {
       cursor_pos(r,0);
@@ -76,6 +82,7 @@
     }
     write_command(0xaf);
     cursor_pos(0,0);
+    clear_in_use();
   }
 
   void ssd1306::timed_clear(int ms){
@@ -96,6 +103,19 @@
     }
   }
 
+  void ssd1306::write_string_8(const char *string){
+    uint8_t i = 0;
+    while(string[i]){
+      write_char_8(string[i]);
+      i++;
+    }
+  }
+
+  // overload for std::string
+  void ssd1306::write_string_8(std::string s){
+    write_string_8(s.c_str());
+  }
+
   void ssd1306::write_time_8(tod time, bool seconds){
     char buffer[16];
     uint8_t len;
@@ -109,16 +129,28 @@
     }
   }
 
-  void ssd1306::write_string_8(const char *string){
-    uint8_t i = 0;
-    while(string[i]){
-      write_char_8(string[i]);
-      i++;
-    }
+  void ssd1306::write_string_8_at(const char *string, uint8_t r, uint8_t c){
+    set_in_use();
+    cursor_pos(r,c);
+    load_font(font8);
+    write_string_8(string);
+    clear_in_use();
   }
 
-  void ssd1306::write_string_8(std::string s){
-    write_string_8(s.c_str());
+  void ssd1306::write_string_8_at(std::string s, uint8_t r, uint8_t c){
+    set_in_use();
+    cursor_pos(r,c);
+    load_font(font8);
+    write_string_8(s);
+    clear_in_use();
+  }
+
+  void ssd1306::write_time_8_at(tod time, uint8_t r, uint8_t c, bool seconds){
+    set_in_use();
+    cursor_pos(r,c);
+    load_font(font8);
+    write_time_8(time, seconds);
+    clear_in_use();
   }
 
   //this is kinda scuffed, but i dont really want to add in a way to tell which rows are 
@@ -139,8 +171,8 @@
     }
   }
 
-    void ssd1306::write_string_16(std::string s){
-      write_string_16(s.c_str());
+  void ssd1306::write_string_16(std::string s){
+    write_string_16(s.c_str());
   }
 
   void ssd1306::write_time_16(tod time, bool seconds){
@@ -155,8 +187,44 @@
       write_char_16(buffer[i]);
     }
   }
-  
 
+  void ssd1306::write_string_16_at(const char *string, uint8_t r, uint8_t c){
+    set_in_use();
+    cursor_pos(r,c);
+    load_font(font16);
+    write_string_16(string);
+    clear_in_use();
+  }
+
+  void ssd1306::write_string_16_at(std::string s, uint8_t r, uint8_t c){
+    set_in_use();
+    cursor_pos(r,c);
+    load_font(font16);
+    write_string_16(s);
+    clear_in_use();
+  }
+
+  void ssd1306::write_time_16_at(tod time, uint8_t r, uint8_t c, bool seconds){
+    set_in_use();
+    cursor_pos(r,c);
+    load_font(font16);
+    write_time_16(time, seconds);
+    clear_in_use();
+  }
+  
+  bool ssd1306::check_in_use(){
+    //if(in_use){Serial.println(in_use);}
+    
+    return in_use;
+  }
+
+  void ssd1306::set_in_use(){
+    in_use = true;
+  }
+
+  void ssd1306::clear_in_use(){
+    in_use = false;
+  }
 
   ssd1306 oled;
 

@@ -1,6 +1,5 @@
 #include "task_manager/task_repeating.h"
-#include "debug/bp.h"
-
+#include "config/config.h"
 
 using namespace task_master;
 
@@ -8,46 +7,60 @@ using namespace task_master;
     char buffer[256];
     sprintf(buffer, "task name: %s]\ntype: %d\ngpio: %d\nactive: %d\ncan_warn: %d\ncan_punish: %d\ncan_reward: %d", name.c_str(), type, gpio, active, can_warn, can_punish, can_reward);
     Serial.println(buffer);
-    Serial.print("start: "); start.print();
-    Serial.print("end: "); end.print();
-    Serial.print("interval: "); interval.print();
-    Serial.print("next_time: "); next_time.print();
+    Serial.print("start: ");Serial.print(asctime(localtime(&start)));
+    Serial.print("end: ");Serial.print(asctime(localtime(&end)));
+    Serial.print("interval: ");Serial.print(asctime(gmtime(&interval)));
+    Serial.print("next_time: ");Serial.print(asctime(localtime(&next_time)));
     if(can_warn){
-      Serial.print("next_warn: "); next_warn.print();
+      Serial.print("next_warn: ");Serial.print(asctime(localtime(&next_warn)));
       warning.print();
     }
     if(can_punish){
-      Serial.print("next_punish: "); next_punish.print();
+      Serial.print("next_punish: ");Serial.print(asctime(localtime(&next_punish)));
       punish.print();
     }
     if(can_reward){
-      Serial.print("reward_message :"); Serial.println(reward_message.c_str());
+      Serial.print("reward_message: "); Serial.println(reward_message.c_str());
     }
+    Serial.println("\n");
   }
 
   //convert to JsonObject
   JsonDocument task_repeat::to_json(){
     JsonDocument doc;
+    
 
     doc["name"] = name.c_str();
     doc["type"]  = type;
-    doc["start"] = start.to_json();
-    doc["end"] = end.to_json();
-    doc["interval"] = interval.to_json();
+    tod temp;
+    temp = tod(start);
+    doc["start"] = temp.to_json();
+    temp = tod(end);
+    doc["end"] = temp.to_json();
+    temp = tod(interval,true);
+    doc["interval"] = temp.to_json();
     doc["can_punish"] = can_punish;
     doc["can_warn"] = can_warn;
     doc["can_reward"] = can_reward;
 
+    
+
     if(can_punish){
+      temp = tod(punish_time,true);
+      doc["punish_time"] = temp.to_json();
       doc["punishment"]=punish.to_json();
+
     }
 
     if(can_warn){
-      doc["warning"]=warning.to_json();
+      temp = tod(warn_time,true);
+      doc["warn_time"] = temp.to_json();
+      doc["warning"] = warning.to_json();
     }
 
-    if(can_warn){
+    if(can_reward){
       doc["reward_message"] = reward_message.c_str();
+      
     }
 
     doc["gpio"] = gpio;
@@ -65,13 +78,17 @@ using namespace task_master;
     type = object["type"];
 
     JsonArray start_array = object["start"];
-    start = tod(start_array);
+    tod temp;
+    temp = tod(start_array);
+    start = temp.to_time();
 
     JsonArray end_array = object["end"];
-    end = tod(end_array);
+    temp = tod(end_array);
+    end = temp.to_time();
 
     JsonArray interval_array = object["interval"];
-    interval = tod(interval_array);
+    temp = tod(interval_array);
+    interval = temp.to_time();
 
     can_punish = object["can_punish"];
     can_warn = object["can_warn"];
@@ -79,18 +96,18 @@ using namespace task_master;
 
     if(can_punish){
       JsonArray punish_array = object["punish_time"];
-      punish_time = tod(punish_array);
+      temp = tod(punish_array);
+      punish_time = temp.to_time();
       JsonObject task_punish = object["punishment"];
-      punish = control(task_punish);
-      next_punish = start + punish_time;
+      punish = openshock::control(task_punish);
     }
 
     if(can_warn){
       JsonArray warn_array = object["warn_time"];
-      warn_time = tod(warn_array);
+      temp = tod(warn_array);
+      warn_time = temp.to_time();
       JsonObject task_warn = object["warning"];
-      warning = control(task_warn);
-      next_warn =  start + warn_time;
+      warning = openshock::control(task_warn);
     }
 
     if(can_reward) {
@@ -98,36 +115,28 @@ using namespace task_master;
     } 
     gpio = object["gpio"];
     
-    next_time = start + interval;
     
-    active = true;
-  }
+    //calculate the start of the day
+    time_t ctime = time(nullptr);
+    tm day;
+    localtime_r(&ctime,&day);
+    day.tm_hour = 0; day.tm_min = 0; day.tm_sec = 0;
+    time_t start_of_day = mktime(&day);
 
-  //i realized im doing a lot of if(can_warn) and if(can_punish), seems inefficient. maybe there is a better way?
-  void task_repeat::check(config* conf){
-    if(current_time == next_time && current_time != end){ //its time to recalculate next_time
-      if(next_time + interval > end){ //the next interval is the last
-        next_time = end;
-        if(can_warn){
-          next_warn = end + warn_time - interval;
-        }
-        if(can_punish){
-          next_punish = end + punish_time - interval;
-        }
-        interval_active = true;
-      }else{ //the next interval isn't the last
-        if(can_warn){
-          next_warn = next_time + warn_time;
-        }
-        if(can_punish){
-          next_punish = next_time + punish_time;
-        }
-        next_time = next_time + interval;
-        interval_active = true;
-      }
+    //calculate all the initial times
+    start = start_of_day + start;
+    end = start_of_day + end;
+    interval = interval;
+    time_t prev_end = end - 86400;
+    time_t prev_start = start - 86400;
+
+    if(start > end){ //the end time must be tomorrow, so add a day to the end time
+      end += 86400;
+      prev_end += 86400;
     }
-    
-    if(current_time == end && current_time == next_time){ //set next_time to start interval
+
+    //check if we are outside the task time
+    if(ctime <= start && ctime >= prev_end){
       next_time = start + interval;
       if(can_warn){
         next_warn = start + warn_time;
@@ -136,38 +145,114 @@ using namespace task_master;
         next_punish = start + punish_time;
       }
       interval_active = true;
-      active = false;
+
+      //we are inside the task time
+    }else{
+      time_t temp_start;
+      time_t temp_end;
+      if(ctime < end && ctime > start){
+        temp_start = start;
+        temp_end = end;
+      }
+
+      if(ctime < prev_end && ctime > prev_start){
+        temp_start = prev_start;
+        temp_end = prev_end;
+        start = prev_start;
+        end = prev_end;
+      }  
+      next_time = temp_start;
+
+      calc_next_time();
     }
+    interval_active = true;
+    active = true;
+  }
+
+  void task_repeat::check(){
+    time_t ctime = time(nullptr);
+    
+    if(ctime == next_time){ //its time to recalculate next_time
+      calc_next_time();
+    }
+
     
     if(digitalRead(gpio) && interval_active){ //really dumb software debounce
       delay(50);
       if(digitalRead(gpio)){ //if still high, deactivate task
         interval_active = false;
         if(can_reward){
-          oled.load_font(font8);
-          oled.cursor_pos(3,0);
-          oled.write_string_8(reward_message);
-          oled.timed_clear(conf->message_time*1000);
+          oled.write_string_8_at(reward_message, 3, 0);
+          oled.timed_clear(conf.message_time*1000);
         }
       }
     }
 
-    if(can_punish && next_punish == current_time && interval_active){ //if this iteration is still active and its time and failure is an option, zap!
-      oled.load_font(font8);
-      oled.cursor_pos(3,0);
-      oled.write_string_8(punish.message);
-      control_request(conf, punish);
+    if(can_punish && next_punish == ctime && interval_active){ //if this iteration is still active and its time and failure is an option, zap!
+      oled.write_string_8_at(punish.message, 3, 0);
+      control_request(conf.os_config, punish);
       interval_active = false; //assume that if there was a warning, it came before the punishment
-      oled.timed_clear(conf->message_time*1000);
-    }else if(can_warn && next_warn == current_time && interval_active){ //if this iteration is still active and its time and this task gives a warning, zap!
-      oled.load_font(font8);
-      oled.cursor_pos(3,0);
-      oled.write_string_8(warning.message);
-      control_request(conf, warning);
+      oled.timed_clear(conf.message_time*1000);
+    }else if(can_warn && next_warn == ctime && interval_active){ //if this iteration is still active and its time and this task gives a warning, zap!
+      oled.write_string_8_at(warning.message, 3, 0);
+      control_request(conf.os_config, warning);
       if(!can_punish) interval_active = false; //if there is no punishment, then this task is done
-      oled.timed_clear(conf->message_time*1000);
+      oled.timed_clear(conf.message_time*1000);
     }
+  }
+
+  void task_repeat::disable(){
+    active = false;
+    interval_active = false;
+    next_time = start + interval;
+    if(can_warn){
+      next_warn = start + warn_time;
+    }
+    if(can_punish){
+      next_punish = start + punish_time;
+    }
+  }
+
+  void task_repeat::enable(){
+    active = true;
+    interval_active = true;
+  }
+
+  void task_repeat::print_times(){
     
   }
 
+  void task_repeat::calc_next_time(){
+      time_t ctime = time(nullptr);
+      //loop thru and find the next interval start
+      while(next_time <= ctime){
+        next_time += interval;
+      }
+      if(next_time > end){
+        next_time = end;
+      }
+      if(can_warn){
+        next_warn = next_time - interval + warn_time;
+      }
+      if(can_punish){
+        next_punish = next_time - interval + punish_time;
+      }
+      interval_active = true;
+
+      if(ctime == end && ctime == next_time){ //set next_time to start + interval + 1 day
+        start += 86400;
+        end += 86400;
+        next_time = start + interval;
+        if(can_warn){
+          next_warn = start + warn_time;
+        }
+        if(can_punish){
+          next_punish = start + punish_time;
+        }
+        
+        interval_active = true;
+        active = false;
+      }
+
+  }
 

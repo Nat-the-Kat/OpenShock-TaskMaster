@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TaskMaster network management panel</title>
+    <link rel="stylesheet" href="i_hope_this_looks_decent.css">
+  </head>
+  <body onload="load_from_ram()">
+    <nav>
+      <a href="index.html">index</a>
+      <a href="config.html">configuration</a>
+      <a href="tasks.html">task list</a>
+      <a href="networks.html">wifi list</a>
+    </nav>
+    <h1>network management panel</h1>
+    <input type="button" onclick="load_from_ram()" value="load network list">
+    <!--<input type="button" id="from_const" onclick="load_from_const()" value="show network list in js const"> -->
+    <br>
+    <p>if for some reason you want to connect to an open network,<br>leave the password field blank.</p>
+    <br>
+    <table id="network_table" border="1 px">
+      <thead>
+        <tr>
+          <th></th>
+          <th scope="col">ssid</th>
+          <th scope="col">password</th>
+        </tr>
+        <tr>
+          <td>
+            <input type="button" id="add_network" onclick="add_network()" value="add">
+          </td>
+          <td>
+            <input type="text" id="add_ssid" placeholder="ssid">
+          </td>
+          <td>
+            <input type="text" id="add_password" placeholder="password">
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <br>
+    <input type="button" onclick="write_to_flash()" value="save networks">
+    <input type="button" id="delete_selected" onclick="delete_objects()" value="delete selected">
+    <script src="./scripts/jquery-3.3.1.min.js"></script>
+    <script src="./scripts/network_script.js"></script>
+    <script src="./scripts/common.js"></script>
+  </body>
+</html>
