@@ -31,6 +31,8 @@ over the coarse of this project, the challenge turned into:
 
 i'm well aware this challenge makes everything look kinda cursed.
 
+as for the formatting, i've got no excuse, its just kinda whats easiest to read (for me)
+
 ## **contributing**
 please feel free to submit pull requests, i just ask that you follow the challenge set out above. contributers will be credited for their work below.
 
