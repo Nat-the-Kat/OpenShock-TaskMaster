@@ -38,3 +38,9 @@ void web_server::fetch_css(){
   web_server::server.streamFile(network_script_file,"text/css",200);
   network_script_file.close(); 
 }
+
+void web_server::fetch_tz_text(){
+  File network_script_file = LittleFS.open("/portal/scripts/tz_text.js", "r");
+  web_server::server.streamFile(network_script_file,"text/javascript",200);
+  network_script_file.close(); 
+}
