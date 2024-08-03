@@ -7,16 +7,17 @@
 namespace task_master{
   class task{
     public:
-      uint8_t gpio = 0;  //gpio pin used to call off the task
+      
       uint8_t type = 0;
+      uint8_t gpio = 0;  //gpio pin used to call off the task
       std::string name = "task_name";
 
       bool can_warn = false; //does this task give a warning?
-      tod warn_time;
+      time_t warn_time;
       openshock::control warning;
 
       bool can_punish = false; //is there a punishment assinged to this task?
-      tod punish_time;
+      time_t punish_time;
       openshock::control punish;
 
       bool can_reward = false;
@@ -28,10 +29,10 @@ namespace task_master{
       virtual JsonDocument to_json();
       virtual void check();
       virtual void disable();
+      virtual void enable();
       
 
       task();
       task(JsonObject object);
-
   };
 }

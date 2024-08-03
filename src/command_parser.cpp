@@ -8,6 +8,7 @@
 #include "helpers/filesystem.h"
 #include "helpers/stream_to_string.h"
 #include "task_manager/task_manager.h"
+#include "task_manager/task_repeating.h"
 #include "wifi_manager/wifi_manager.h"
 
 #define version_string "v0.1.0"
@@ -51,7 +52,7 @@
       Serial.println(version_string);
 
     }else if(strncmp(input.c_str(), "test", 4) == 0){
-
+      
     }else if(strncmp(input.c_str(), "write_tasks", 11) == 0){
       manager.write_to_file();
 
