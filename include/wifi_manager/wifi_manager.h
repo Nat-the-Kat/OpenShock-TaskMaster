@@ -37,8 +37,7 @@ namespace task_master{
     private:
       uint8_t retry_count;
       std::vector <wifi_config> wifi_configs;
-      uint8_t current_state = disconnected;
-
+      
       void add_network(JsonObject object);
 
       bool start_config_ap();
