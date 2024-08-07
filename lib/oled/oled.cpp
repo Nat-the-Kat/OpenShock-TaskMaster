@@ -1,24 +1,26 @@
 #include "oled.h"
+//#include <Arduino.h>
+#include <pico/stdlib.h>
+#include <hardware/i2c.h>
 
   void ssd1306::write_command(uint8_t c){
-    Wire.beginTransmission(address);
-    Wire.write(0x80);
-    Wire.write(c);
-    Wire.endTransmission();
+    uint8_t buf[] = {0x80, c};
+    i2c_write_blocking(i2c0, address, buf, 2, false);
   }
 
-  void ssd1306::write_data(unsigned char data){
-    Wire.beginTransmission(address);
-    Wire.write(0x40);
-    Wire.write(data);
-    Wire.endTransmission();
+  void ssd1306::write_data(uint8_t d){
+    uint8_t buf[]= {0x40, d};
+    i2c_write_blocking(i2c0, address, buf, 2, false);
   }
 
   void ssd1306::init(int sda, int scl, uint8_t a){
-    Wire.setSDA(20);
-    Wire.setSCL(21);
-    Wire.begin();
-    i2c_set_baudrate(i2c0,100000);
+
+    i2c_init(i2c0, 100 * 1000);
+    gpio_set_function(20, GPIO_FUNC_I2C);
+    gpio_set_function(21, GPIO_FUNC_I2C);
+    gpio_pull_up(20);
+    gpio_pull_up(21);
+
     address= a;
     write_command(0xae);  //display off
     write_command(0xd5);  //set osc frequency
@@ -46,9 +48,7 @@
     write_command(0x20);  //set horizontal display mode
     write_command(0x00);
     write_command(0xaf);  //display on
-    delay(100);
-    clear();
-    in_use = false;
+    in_use = false;    
   }
 
   void ssd1306::load_font(const uint8_t* f){
@@ -62,7 +62,7 @@
     pos_row = row;
     pos_col = col;
     uint8_t pos = font_width * col;
-    write_command(0xB0 + row);  //set page
+    write_command(0xb0 + row);  //set page
     /*this is the only binary arithmetic in this project. :(
     i miss assembly... */
     uint8_t l = pos & 0x0f;
@@ -81,16 +81,16 @@
       }
     }
     write_command(0xaf);
-    cursor_pos(0,0);
+    cursor_pos(0, 0);
     clear_in_use();
   }
 
   void ssd1306::timed_clear(int ms){
-    add_alarm_in_ms(ms,clear_callback,NULL,false);
+    add_alarm_in_ms(ms, clear_callback, NULL, false);
   }
 
   void ssd1306::set_frame_callback(int ms, bool (*func)(repeating_timer *t)){
-    add_repeating_timer_ms(-ms,func,NULL,&frame_timer);
+    add_repeating_timer_ms(-ms, func, NULL, &frame_timer);
   }
 
   void ssd1306::write_char_8(uint8_t c){
@@ -98,7 +98,7 @@
       c = ' ';
     }
     for(uint8_t i = 0; i < font_width; i++){
-      int pos = (c-first) * font_width + 3 + i;
+      int pos = (c - first) * font_width + 3 + i;
       write_data(font[pos]);
     }
   }
@@ -120,9 +120,9 @@
     char buffer[16];
     uint8_t len;
     if(seconds){ 
-      len = sprintf(buffer, "%02d:%02d:%02d", time.hr,time.min,time.sec);
+      len = sprintf(buffer, "%02d:%02d:%02d", time.hr, time.min, time.sec);
     }else{
-      len = sprintf(buffer, "%02d:%02d", time.hr,time.min);
+      len = sprintf(buffer, "%02d:%02d", time.hr, time.min);
     }
     for(int i = 0; i < len; i++){
       write_char_8(buffer[i]);
@@ -179,9 +179,9 @@
     char buffer[16];
     uint8_t len;
     if(seconds){ 
-      len = sprintf(buffer, "%02d:%02d:%02d", time.hr,time.min,time.sec);
+      len = sprintf(buffer, "%02d:%02d:%02d", time.hr, time.min, time.sec);
     }else{
-      len = sprintf(buffer, "%02d:%02d", time.hr,time.min);
+      len = sprintf(buffer, "%02d:%02d", time.hr, time.min);
     }
     for(int i = 0; i < len; i++){
       write_char_16(buffer[i]);
@@ -213,8 +213,6 @@
   }
   
   bool ssd1306::check_in_use(){
-    //if(in_use){Serial.println(in_use);}
-    
     return in_use;
   }
 

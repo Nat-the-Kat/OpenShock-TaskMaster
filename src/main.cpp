@@ -12,7 +12,6 @@
 using namespace task_master;
 
   bool update_time(repeating_timer* t);
-  bool wait = true;
 
   void setup() {
     Serial.begin(115200);
@@ -44,7 +43,6 @@ using namespace task_master;
 
     Serial.println("Ready to receive commands...");
     digitalWrite(LED_BUILTIN,HIGH);
-    wait = false;
   }
 
   void loop(){
@@ -55,10 +53,8 @@ using namespace task_master;
 
   void setup1(){
     oled.init(20,21);
-    oled.set_frame_callback(250,update_time);
-    //wait until core0 has finish setup, yes this is crude but rp2040.idleOtherCore() doesn't play well with LittleFS.
-    while(wait);
-    
+    oled.clear();
+    oled.set_frame_callback(250,update_time);    
   }
 
   void loop1(){

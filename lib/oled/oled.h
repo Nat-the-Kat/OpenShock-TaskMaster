@@ -1,6 +1,4 @@
 #pragma once
-#include <Arduino.h>
-#include <Wire.h>
 #include <pico/stdlib.h>
 #include <tod.h>
 
