@@ -1,5 +1,4 @@
 #include "oled.h"
-//#include <Arduino.h>
 #include <pico/stdlib.h>
 #include <hardware/i2c.h>
 
