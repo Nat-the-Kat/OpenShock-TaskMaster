@@ -11,6 +11,8 @@
 #include "task_manager/task_repeating.h"
 #include "wifi_manager/wifi_manager.h"
 
+#include <wifiz.h> 
+
 #define version_string "v0.1.0"
 
 //very simple serial command parser to allow modifying the configuration
@@ -52,6 +54,7 @@
       Serial.println(version_string);
 
     }else if(strncmp(input.c_str(), "test", 4) == 0){
+
       
     }else if(strncmp(input.c_str(), "write_tasks", 11) == 0){
       manager.write_to_file();
