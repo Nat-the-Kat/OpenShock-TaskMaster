@@ -40,9 +40,6 @@
     bool operator>=(tod const &t);
   };
 
-
-  bool between_inclusive(tod c_time, tod start, tod end);
-  bool between(tod c_time, tod start, tod end);
   void update_time();
 
   extern tod current_time;

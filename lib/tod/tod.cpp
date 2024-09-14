@@ -170,38 +170,6 @@
     }
   } 
 
-  //returns true if c_time is between start and end, including if c_time = start or c_time = end
-  bool between_inclusive(tod c_time, tod start, tod end){
-    tod temp_end = end;
-    tod temp_current = c_time;
-    if(start > end){ //if true, end time must be past midnight
-      temp_end.hr += 24; //temporarily make end time bigger
-      if(c_time < end){
-        temp_current.hr += 24; // if i did this math right, 
-      }
-    }
-    if(temp_current >= start && temp_current <= temp_end){
-      return true;
-    }
-    return false;
-  }
-
-  //returns true if c_time is between start and end, but not if c_time = start or c_time = end
-  bool between(tod c_time, tod start, tod end){
-    tod temp_end = end;
-    tod temp_current = c_time;
-    if(start > end){
-      temp_end.hr += 24;
-      if(c_time < end){
-        temp_current.hr += 24;
-      }
-    }
-    if(temp_current > start && temp_current < temp_end){
-      return true;
-    }
-    return false;
-  }
-
   void update_time(){
     tm temp;
     time_t now = time(nullptr); 
