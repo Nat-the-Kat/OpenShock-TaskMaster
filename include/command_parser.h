@@ -4,6 +4,6 @@
 namespace task_master {
   void parse_serial();
 
-  void help(std::string s);
+  void help();
 }
 

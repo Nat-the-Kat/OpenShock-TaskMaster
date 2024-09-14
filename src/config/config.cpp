@@ -1,10 +1,10 @@
 #include "config/config.h"
 #include <LittleFS.h>
 
-  //using namespace task_master;
+  using namespace task_master;
 
   //check if config.json exists, if not, create a default config
-  void task_master::config::init(){
+  void config_class::init(){
     File config_file = LittleFS.open("config.json", "r");
 
     if(!config_file){
@@ -25,7 +25,7 @@
   }
 
   //write the config in ram to config.json
-  void task_master::config::write_to_file(){
+  void config_class::write_to_file(){
     File config_file = LittleFS.open("config.json","w");
     std::string temp = write_to_string();
     config_file.write(temp.c_str(),temp.size());
@@ -33,13 +33,13 @@
     config_file.close();
   }
 
-  void task_master::config::read_from_file(){
+  void config_class::read_from_file(){
     File config_file = LittleFS.open("config.json", "r");
     read_from_stream(config_file);
     config_file.close();
   }
 
-  void task_master::config::print(){
+  void config_class::print(){
     char buffer[64];
     sprintf(buffer, "ntp_server: %s", ntp_server.c_str());
     Serial.println(buffer);
@@ -57,16 +57,8 @@
     Serial.print("timezone_name: ");Serial.println(timezone_name.c_str());
     Serial.print("timezone_rule: ");Serial.println(timezone_rule.c_str());
   }
-
-
-  void task_master::config::edit_config(){
-    Serial.println();
-    Serial.println("waiting for json string...");
-    while(!Serial.available());
-    read_from_stream(Serial);
-  }
   
-  void task_master::config::read_from_stream(Stream &s){
+  void config_class::read_from_stream(Stream &s){
     JsonDocument doc;
     DeserializationError error = deserializeJson(doc, s);
     if(error){
@@ -95,7 +87,7 @@
     }
   }
 
-  std::string task_master::config::write_to_string(){
+  std::string config_class::write_to_string(){
     std::string out;
     JsonDocument doc;
     JsonObject config = doc["config"].to<JsonObject>();
@@ -120,4 +112,4 @@
     return out;
   }
 
-  task_master::config conf;
+  config_class config;

@@ -44,34 +44,12 @@ using namespace task_master;
   void wifi_manager::add_network(JsonObject object){
     wifi_config temp(object);
     wifi_configs.push_back(temp);
-  }
-
-  void wifi_manager::read_from_serial(){
-    Serial.println("waiting for json string...");
-    while(!Serial.available());
-    if(read_from_stream(Serial)){
-      Serial.println("network(s) added!");
-      write_to_file();
-    }
-  }
-    
+  }   
 
   void wifi_manager::print_networks(){
     for(wifi_config i: wifi_configs){
       i.print();
     }
-  }
-
-  bool wifi_manager::delete_network(const char* ssid){
-    for(auto i = wifi_configs.begin(); i != wifi_configs.end(); i++){
-      if(strcmp(ssid, (*i).ssid.c_str()) == 0){
-        wifi_configs.erase(i);
-        Serial.println("network deleted!");
-        return true;
-      }
-    }
-    Serial.println("error! network not found in list!");
-    return false;
   }
 
   bool wifi_manager::attempt_connection(){

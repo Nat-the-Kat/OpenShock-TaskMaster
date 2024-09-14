@@ -8,7 +8,7 @@
 namespace task_master::web_server{
   void init();
   void not_found();
-  void config_ram();
-  void tasks_ram();
-  void networks_ram();
+  void config_read();
+  void tasks_read();
+  void networks_read();
 }

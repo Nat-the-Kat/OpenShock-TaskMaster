@@ -34,13 +34,13 @@ void web_server::fetch_common_script(){
 }
 
 void web_server::fetch_css(){
-  File network_script_file = LittleFS.open("/portal/i_hope_this_looks_decent.css", "r");
-  web_server::server.streamFile(network_script_file,"text/css",200);
-  network_script_file.close(); 
+  File css_file = LittleFS.open("/portal/i_hope_this_looks_decent.css", "r");
+  web_server::server.streamFile(css_file,"text/css",200);
+  css_file.close(); 
 }
 
 void web_server::fetch_tz_text(){
-  File network_script_file = LittleFS.open("/portal/scripts/tz_text.js", "r");
-  web_server::server.streamFile(network_script_file,"text/javascript",200);
-  network_script_file.close(); 
+  File tz_file = LittleFS.open("/portal/scripts/tz_text.js", "r");
+  web_server::server.streamFile(tz_file,"text/javascript",200);
+  tz_file.close(); 
 }

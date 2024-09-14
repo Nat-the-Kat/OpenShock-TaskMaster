@@ -183,21 +183,21 @@ using namespace task_master;
         interval_active = false;
         if(can_reward){
           oled.write_string_8_at(reward_message, 3, 0);
-          oled.timed_clear(conf.message_time*1000);
+          oled.timed_clear(config.message_time*1000);
         }
       }
     }
 
     if(can_punish && next_punish == ctime && interval_active){ //if this iteration is still active and its time and failure is an option, zap!
       oled.write_string_8_at(punish.message, 3, 0);
-      control_request(conf.os_config, punish);
+      control_request(config.os_config, punish);
       interval_active = false; //assume that if there was a warning, it came before the punishment
-      oled.timed_clear(conf.message_time*1000);
+      oled.timed_clear(config.message_time*1000);
     }else if(can_warn && next_warn == ctime && interval_active){ //if this iteration is still active and its time and this task gives a warning, zap!
       oled.write_string_8_at(warning.message, 3, 0);
-      control_request(conf.os_config, warning);
+      control_request(config.os_config, warning);
       if(!can_punish) interval_active = false; //if there is no punishment, then this task is done
-      oled.timed_clear(conf.message_time*1000);
+      oled.timed_clear(config.message_time*1000);
     }
   }
 

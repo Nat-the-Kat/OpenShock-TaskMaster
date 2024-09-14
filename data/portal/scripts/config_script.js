@@ -23,12 +23,11 @@ let zone_id = 0;
 function on_load(){
   load_zones();
   load_from_ram();
-  //load_from_const();
   
 }
 
 function load_from_ram(){
-  load_from("/ram/config", update_config);
+  load_from("/data/config", update_config);
 }
 
 
@@ -58,11 +57,11 @@ function scan_zones(input){
   zone_id = 457; //if we reach this point, there wasn't a match, so default to utc
 }
 
-function load_from_const(){
+/*function load_from_const(){
   const text = "{\"config\":{\"ntp_server\":\"pool.ntp.org\",\"os_config\":{\"server\":\"null\",\"api_key\":\"null\",\"shocker\":\"null\"},\"can_override\":true,\"override_pin\":1,\"num_overrides\":1,\"reset_day\":0,\"message_time\":3,\"reset_time\":[0,0,0],\"timezone_name\":\"America/Los_Angeles\",\"timezone_rules\":\"PST8PDT,M3.2.0,M11.1.0\"}}";
   var obj = JSON.parse(text);
   update_config(obj);
-}
+}*/
 
 function update_config(data){
   if(!enabled){
@@ -113,7 +112,7 @@ function write_to_flash(){
   out.config.timezone_rule = zone_rules[zone_id];
   var j = JSON.stringify(out);
   if(check_form(config_form)){
-    send_data("/flash/config", j);
+    send_data("/data/config", j);
   console.log(j);
   }
 } 

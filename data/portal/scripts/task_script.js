@@ -33,17 +33,17 @@ let currently_editing = -1;
 const formToObject = form => Object.fromEntries(new FormData(form));
 
 function load_from_ram(){
-  load_from("/ram/config", fetch_reset_pin);
-  load_from("/ram/tasks", update_tasks);
+  load_from("/data/config", fetch_reset_pin);
+  load_from("/data/tasks", update_tasks);
   
 }
 
-function load_from_const(){
+/*function load_from_const(){
   const text = "{\"tasks\":[{\"name\":\"hydrate\",\"type\":3,\"can_punish\":true,\"can_warn\":true,\"can_reward\":true,\"start\":[9,0,0],\"end\":[23,0,0],\"interval\":[1,0,0],\"punish_time\":[0,55,0],\"punishment\":{\"intensity\":40,\"type\":\"Shock\",\"duration\":1000,\"message\":\"Drink some water. Its good for you.\"},\"warn_time\":[0,45,0],\"warning\":{\"intensity\":50,\"type\":\"Vibrate\",\"duration\":1000,\"message\":\"Its time to drink some water.\"},\"reward_message\":\"Good job\",\"gpio\":5},{\"name\":\"eat food\",\"type\":2,\"can_punish\":true,\"can_warn\":true,\"can_reward\":true,\"window\":[0,30,0],\"punish_time\":[12,45,0],\"punishment\":{\"intensity\":40,\"type\":\"Shock\",\"duration\":1000,\"message\":\"Eat something. Its good for you.\"},\"warn_time\":[12,30,0],\"warning\":{\"intensity\":50,\"type\":\"Vibrate\",\"duration\":1000,\"message\":\"its lunch time, you should have something to eat!\"},\"reward_message\":\"Good job\",\"gpio\":4},{\"name\":\"wake up\",\"type\":1,\"can_punish\":true,\"can_warn\":true,\"can_reward\":true,\"punish_time\":[8,45,0],\"punishment\":{\"intensity\":100,\"type\":\"Shock\",\"duration\":1000,\"message\":\"You really should have gotten up by now...\"},\"warn_time\":[8,30,0],\"warning\":{\"intensity\":100,\"type\":\"Vibrate\",\"duration\":1000,\"message\":\"Its time to wake up\"},\"reward_message\":\"Good morning!\",\"gpio\":3}]}";
   var obj = JSON.parse(text);
   load_from("/ram/config", fetch_reset_pin);
   update_tasks(obj);
-}
+}*/
 
 function update_tasks(data){
   task_list.splice(0,table_body.rows.length);
@@ -342,6 +342,6 @@ function new_task(){
 
 function write_to_flash(){
   var j = JSON.stringify(to_object());
-  send_data("/flash/tasks", j);
+  send_data("/data/tasks", j);
 
 }

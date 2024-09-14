@@ -8,38 +8,47 @@
 
 using namespace task_master;
 
-void web_server::config_flash(){
-  JsonDocument doc;
-  HTTPUpload& upload = web_server::server.upload();
-  deserializeJson(doc,upload.buf,upload.currentSize);
-  File config_file = LittleFS.open("config.json", "w");
-  serializeJson(doc,config_file);
-  config_file.close();
-  conf.init(); //restart config
-  web_server::server.send(200,"text/plain","ok");
+#define dest_config 1
+#define dest_tasks 2
+#define dest_networks 3
+
+void web_server::config_write(){
+  recieve_data(dest_config);
+  config.init(); //restart config
   Serial.println("config updated");
 }
 
-void web_server::tasks_flash(){
-  JsonDocument doc;
-  HTTPUpload& upload = web_server::server.upload();
-  deserializeJson(doc,upload.buf,upload.currentSize);
-  File task_file = LittleFS.open("tasks.json", "w");
-  serializeJson(doc,task_file);
-  task_file.close();
-  manager.init(); //restart task manager
-  web_server::server.send(200,"text/plain","ok");
+void web_server::tasks_write(){
+  recieve_data(dest_tasks);
+  task_manager.init(); //restart task manager
   Serial.println("task list updated");
 }
 
-void web_server::networks_flash(){
+void web_server::networks_write(){
+  recieve_data(dest_networks);
+  w_manager.init(); //restart network manager
+  Serial.println("network list updated");
+}
+
+void web_server::recieve_data(int dest){
   JsonDocument doc;
   HTTPUpload& upload = web_server::server.upload();
   deserializeJson(doc,upload.buf,upload.currentSize);
-  File network_file = LittleFS.open("wifi.json", "w");
-  serializeJson(doc,network_file);
-  network_file.close();
-  w_manager.init(); //restart network manager
+  File file;
+  switch(dest){
+    case dest_config:
+      file = LittleFS.open("config.json", "w");
+      break;
+    case dest_tasks:
+      file = LittleFS.open("tasks.json", "w");
+      break;
+    case dest_networks:
+      file = LittleFS.open("wifi.json", "w");
+      break;
+    default:
+      break;
+  }
+  serializeJson(doc,file);
+  file.close();
   web_server::server.send(200,"text/plain","ok");
-  Serial.println("network list updated");
 }

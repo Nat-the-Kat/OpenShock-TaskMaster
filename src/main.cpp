@@ -25,11 +25,11 @@ using namespace task_master;
       rp2040.reboot();
     }
 
-    conf.init();
+    config.init();
     w_manager.init();
 
     if(w_manager.attempt_connection()){
-      NTP.begin(conf.ntp_server.c_str());
+      NTP.begin(config.ntp_server.c_str());
       time_t now = time(nullptr);
       while (now < 8 * 3600 * 2) {
         delay(500);
@@ -38,7 +38,7 @@ using namespace task_master;
       }
     }
     update_time();
-    manager.init(); //initialize this after setting the time, so any repeating tasks can be properly setup
+    task_manager.init(); //initialize this after setting the time, so any repeating tasks can be properly setup
     web_server::init();
 
     Serial.println("Ready to receive commands...");
@@ -54,14 +54,14 @@ using namespace task_master;
   void setup1(){
     oled.init(20,21);
     oled.clear();
-    oled.set_frame_callback(250,update_time);    
+    oled.set_frame_callback(250, update_time);    
   }
 
   void loop1(){
     if(Serial.available() > 0) {
       parse_serial();
     }
-    manager.check_tasks();
+    task_manager.check_tasks();
     delay(250);
   }
 

@@ -5,7 +5,7 @@
 #include <string>
 
 namespace task_master{
-  class config{
+  class config_class{
     public:
       std::string ntp_server = "pool.ntp.org";
       openshock::config os_config;
@@ -19,10 +19,7 @@ namespace task_master{
       int dow = 0;
       int message_time = 5;
       
-      void read_from_file(); //read config.json into ram
-      void write_to_file(); //write config in ram to config.json
       void print(); //print config info in ram to serial terminal
-      void edit_config();
       void init();
       
       std::string write_to_string();
@@ -31,10 +28,12 @@ namespace task_master{
       std::string timezone_name;
       std::string timezone_rule; 
       void read_from_stream(Stream &s);
+      void read_from_file(); //read config.json into ram
+      void write_to_file(); //write config in ram to config.json
       
   };
 }
 
-extern task_master::config conf;
+extern task_master::config_class config;
 
   

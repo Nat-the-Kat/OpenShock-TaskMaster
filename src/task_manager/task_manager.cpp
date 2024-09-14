@@ -9,7 +9,7 @@
 
 using namespace task_master;
  
-  void task_manager::init(){
+  void task_manager_class::init(){
     File tasks_file = LittleFS.open("tasks.json", "r");
     if(!tasks_file){
       Serial.println("no task list detected! please create one with add_tasks!");
@@ -17,52 +17,31 @@ using namespace task_master;
     read_from_file();
   }
 
-  void task_manager::print(){
+  void task_manager_class::print(){
     for(int i = 0; i < task_list.size(); i++){
       task_list[i]->print();
     }
   }
 
-  void task_manager::clear_tasks(){
+  void task_manager_class::clear_tasks(){
     task_list.erase(task_list.begin(),task_list.end());
   }
 
-  void task_manager::read_from_file(){
+  void task_manager_class::read_from_file(){
     clear_tasks();
     File task_file = LittleFS.open("tasks.json","r");
     read_from_stream(task_file);
     task_file.close();
   }
 
-  void task_manager::write_to_file(){
+  void task_manager_class::write_to_file(){
     File task_file = LittleFS.open("tasks.json","w");
     std::string temp = write_to_string();
     task_file.write(temp.c_str(),temp.size());
     task_file.close();
   }
 
-  void task_manager::delete_task(const char* task_name){
-    bool found = false;
-    for(int i = 0; i < task_list.size(); i++){
-      if(strcmp(task_name, task_list[i]->name.c_str())==0){
-        task_list.erase(task_list.begin()+i);
-        found = true;
-      }
-    }
-    if(!found){
-      Serial.println("error! task not found!");
-    }
-  }
-
-  void task_manager::add_tasks(){
-    Serial.println();
-    Serial.println("waiting for json string...");
-    while(!Serial.available());
-    read_from_stream(Serial);
-    Serial.println("task(s) added!");   
-  }
-
-  void task_manager::add_task(JsonObject object){
+  void task_manager_class::add_task(JsonObject object){
     int type = object["type"];
     task* t;
     if(type == 1){
@@ -79,7 +58,7 @@ using namespace task_master;
     task_list.push_back(t);
   }
 
-  void task_manager::check_tasks(){
+  void task_manager_class::check_tasks(){
     //check if any task needs updating
     for(task* t: task_list){
       if(t->active){
@@ -87,30 +66,30 @@ using namespace task_master;
       }
     }
     //check if its reset time
-    if(current_time == conf.reset_time){
+    if(current_time == config.reset_time){
       //update day of week
       tm temp;
       time_t now = time(nullptr); 
       localtime_r(&now, &temp); //this seems wasteful...
-      conf.dow = temp.tm_wday;
+      config.dow = temp.tm_wday;
 
       //its reset_day, reset overrides (if enabled)
-      if(conf.dow == conf.reset_day && conf.can_override){
+      if(config.dow == config.reset_day && config.can_override){
 
-        conf.overrides_left = conf.num_overrides;
+        config.overrides_left = config.num_overrides;
       }
       //reactivate all tasks
       for(task* t: task_list){
         t->active = true;
       }
     }
-    if(conf.can_override){
-      if(digitalRead(conf.override_pin) && conf.overrides_left != 0){
+    if(config.can_override){
+      if(digitalRead(config.override_pin) && config.overrides_left != 0){
         delay(500);  //really dumb software debounce
-        if(digitalRead(conf.override_pin)){ //if still high, deactivate task
+        if(digitalRead(config.override_pin)){ //if still high, deactivate task
           oled.write_string_8_at("override used!",3,0);
-          oled.timed_clear(conf.message_time*1000);
-          conf.overrides_left--;
+          oled.timed_clear(config.message_time*1000);
+          config.overrides_left--;
           //actually deactivate all tasks...
           for(task* t: task_list){
             t->disable();
@@ -120,7 +99,7 @@ using namespace task_master;
     }
   }
 
-  void task_manager::read_from_stream(Stream &s){
+  void task_manager_class::read_from_stream(Stream &s){
     JsonDocument doc;
     DeserializationError error = deserializeJson(doc, s);
     if(error){
@@ -134,7 +113,7 @@ using namespace task_master;
     } 
   }
 
-  std::string task_manager::write_to_string(){
+  std::string task_manager_class::write_to_string(){
     std::string out;
     JsonDocument doc;
     JsonArray tasks = doc["tasks"].to<JsonArray>();
@@ -148,4 +127,4 @@ using namespace task_master;
     return out;
   }
 
-  task_manager manager;
+  task_manager_class task_manager;

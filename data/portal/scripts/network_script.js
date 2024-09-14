@@ -3,7 +3,7 @@ let rows = table_body.rows;
 
 
 function load_from_ram(){
-  load_from("/ram/networks", update_networks);
+  load_from("/data/networks", update_networks);
 }
 
 /*function load_from_const(){
@@ -44,7 +44,7 @@ function add_network(){
 
 function write_to_flash(){
   var j = JSON.stringify(to_object());
-  send_data("/flash/networks", j);
+  send_data("/data/networks", j);
   console.log(j);
 }
 
