@@ -8,8 +8,7 @@
     File config_file = LittleFS.open("config.json", "r");
 
     if(!config_file){
-      Serial.println("no config detected! creating new default config.json");
-      write_to_file();
+      Serial.println("no config detected!");
     }else{
       config_file.close();
     }
@@ -22,21 +21,6 @@
     time_t now = time(nullptr); 
     localtime_r(&now, &temp); 
     dow = temp.tm_wday;
-  }
-
-  //write the config in ram to config.json
-  void config_class::write_to_file(){
-    File config_file = LittleFS.open("config.json","w");
-    std::string temp = write_to_string();
-    config_file.write(temp.c_str(),temp.size());
-
-    config_file.close();
-  }
-
-  void config_class::read_from_file(){
-    File config_file = LittleFS.open("config.json", "r");
-    read_from_stream(config_file);
-    config_file.close();
   }
 
   void config_class::print(){
@@ -56,35 +40,6 @@
     Serial.print("reset_time: ");reset_time.print();
     Serial.print("timezone_name: ");Serial.println(timezone_name.c_str());
     Serial.print("timezone_rule: ");Serial.println(timezone_rule.c_str());
-  }
-  
-  void config_class::read_from_stream(Stream &s){
-    JsonDocument doc;
-    DeserializationError error = deserializeJson(doc, s);
-    if(error){
-      Serial.print("deserializeJson() failed: ");
-      Serial.println(error.c_str());
-      return;
-    }else{
-      JsonObject config = doc["config"];
-      ntp_server = std::string(config["ntp_server"]);
-      JsonObject osconfig = config["os_config"];
-      os_config = openshock::config(osconfig);
-      can_override = config["can_override"];
-      if(can_override){
-        override_pin = config["override_pin"];
-        num_overrides = config["num_overrides"];
-        reset_day = config["reset_day"];
-      }
-
-      message_time = config["message_time"];
-      overrides_left = num_overrides;
-
-      JsonArray config_reset_time = config["reset_time"];
-      reset_time = tod(config_reset_time);
-      timezone_name = std::string(config["timezone_name"]);
-      timezone_rule = std::string(config["timezone_rule"]);
-    }
   }
 
   std::string config_class::write_to_string(){
@@ -110,6 +65,37 @@
     doc.shrinkToFit();
     serializeJson(doc, out);
     return out;
+  }
+
+  void config_class::read_from_file(){
+    File config_file = LittleFS.open("config.json", "r");
+        JsonDocument doc;
+    DeserializationError error = deserializeJson(doc, config_file);
+    if(error){
+      Serial.print("deserializeJson() failed: ");
+      Serial.println(error.c_str());
+      return;
+    }else{
+      JsonObject config = doc["config"];
+      ntp_server = std::string(config["ntp_server"]);
+      JsonObject osconfig = config["os_config"];
+      os_config = openshock::config(osconfig);
+      can_override = config["can_override"];
+      if(can_override){
+        override_pin = config["override_pin"];
+        num_overrides = config["num_overrides"];
+        reset_day = config["reset_day"];
+      }
+
+      message_time = config["message_time"];
+      overrides_left = num_overrides;
+
+      JsonArray config_reset_time = config["reset_time"];
+      reset_time = tod(config_reset_time);
+      timezone_name = std::string(config["timezone_name"]);
+      timezone_rule = std::string(config["timezone_rule"]);
+    }
+    config_file.close();
   }
 
   config_class config;

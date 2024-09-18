@@ -26,9 +26,9 @@ using namespace task_master;
     }
 
     config.init();
-    w_manager.init();
+    wifi_manager.init();
 
-    if(w_manager.attempt_connection()){
+    if(wifi_manager.attempt_connection()){
       NTP.begin(config.ntp_server.c_str());
       time_t now = time(nullptr);
       while (now < 8 * 3600 * 2) {
@@ -46,7 +46,7 @@ using namespace task_master;
   }
 
   void loop(){
-    w_manager.check_connection();  
+    wifi_manager.check_connection();  
     web_server::server.handleClient();
     delay(5);
   }

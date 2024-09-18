@@ -10,9 +10,10 @@
 using namespace task_master;
  
   void task_manager_class::init(){
+    task_list.erase(task_list.begin(),task_list.end());
     File tasks_file = LittleFS.open("tasks.json", "r");
     if(!tasks_file){
-      Serial.println("no task list detected! please create one with add_tasks!");
+      Serial.println("no task list detected!");
     }
     read_from_file();
   }
@@ -21,41 +22,6 @@ using namespace task_master;
     for(int i = 0; i < task_list.size(); i++){
       task_list[i]->print();
     }
-  }
-
-  void task_manager_class::clear_tasks(){
-    task_list.erase(task_list.begin(),task_list.end());
-  }
-
-  void task_manager_class::read_from_file(){
-    clear_tasks();
-    File task_file = LittleFS.open("tasks.json","r");
-    read_from_stream(task_file);
-    task_file.close();
-  }
-
-  void task_manager_class::write_to_file(){
-    File task_file = LittleFS.open("tasks.json","w");
-    std::string temp = write_to_string();
-    task_file.write(temp.c_str(),temp.size());
-    task_file.close();
-  }
-
-  void task_manager_class::add_task(JsonObject object){
-    int type = object["type"];
-    task* t;
-    if(type == 1){
-      t = new task(object);
-    }else if(type == 2){
-      t = new task_timed(object);
-    }else if(type == 3){
-      t = new task_repeat(object);
-    }else{
-      Serial.print("unknown task type: "); Serial.println(type);
-      Serial.println("defaulting to type 1");
-      t = new task(object);
-    }
-    task_list.push_back(t);
   }
 
   void task_manager_class::check_tasks(){
@@ -99,20 +65,6 @@ using namespace task_master;
     }
   }
 
-  void task_manager_class::read_from_stream(Stream &s){
-    JsonDocument doc;
-    DeserializationError error = deserializeJson(doc, s);
-    if(error){
-      Serial.print("deserializeJson() failed: ");
-      Serial.println(error.c_str());
-      return;
-    }else{
-      for (JsonObject task_json : doc["tasks"].as<JsonArray>()) {
-        add_task(task_json);
-      }
-    } 
-  }
-
   std::string task_manager_class::write_to_string(){
     std::string out;
     JsonDocument doc;
@@ -125,6 +77,40 @@ using namespace task_master;
     doc.shrinkToFit();
     serializeJson(doc, out);
     return out;
+  }
+
+  void task_manager_class::read_from_file(){
+    task_list.erase(task_list.begin(),task_list.end());
+    File task_file = LittleFS.open("tasks.json","r");
+    JsonDocument doc;
+    DeserializationError error = deserializeJson(doc, task_file);
+    if(error){
+      Serial.print("deserializeJson() failed: ");
+      Serial.println(error.c_str());
+      return;
+    }else{
+      for (JsonObject task_json : doc["tasks"].as<JsonArray>()) {
+        add_task(task_json);
+      }
+    } 
+    task_file.close();
+  }
+
+  void task_manager_class::add_task(JsonObject object){
+    int type = object["type"];
+    task* t;
+    if(type == 1){
+      t = new task(object);
+    }else if(type == 2){
+      t = new task_timed(object);
+    }else if(type == 3){
+      t = new task_repeat(object);
+    }else{
+      Serial.print("unknown task type: "); Serial.println(type);
+      Serial.println("defaulting to type 1");
+      t = new task(object);
+    }
+    task_list.push_back(t);
   }
 
   task_manager_class task_manager;

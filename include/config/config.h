@@ -19,17 +19,15 @@ namespace task_master{
       int dow = 0;
       int message_time = 5;
       
-      void print(); //print config info in ram to serial terminal
       void init();
+      void print(); //print config info in ram to serial terminal
       
       std::string write_to_string();
 
     private:
       std::string timezone_name;
       std::string timezone_rule; 
-      void read_from_stream(Stream &s);
       void read_from_file(); //read config.json into ram
-      void write_to_file(); //write config in ram to config.json
       
   };
 }

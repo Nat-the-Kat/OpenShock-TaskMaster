@@ -7,8 +7,8 @@ WiFiMulti wifi;
 
 using namespace task_master;
   //check if wifi.json exists
-  void wifi_manager::init(){
-    
+  void wifi_manager_class::init(){
+    WiFi.disconnect();
     wifi_configs.clear();
     retry_count = max_retry_count;
     if(!LittleFS.exists("wifi.json")){
@@ -20,39 +20,38 @@ using namespace task_master;
     }
   }
 
-  void wifi_manager::reset(){
-    WiFi.disconnect();
-    init();
-
-  }
-
-  //write the network list in ram to wifi.json
-  void wifi_manager::write_to_file(){
-    File wifi_file = LittleFS.open("wifi.json", "w");
-    std::string temp = write_to_string();
-    wifi_file.write(temp.c_str(),temp.size());
-    wifi_file.close();
-  }
-
-  void wifi_manager::read_from_file(){
-    wifi_configs.clear();
-    File wifi_file = LittleFS.open("wifi.json", "r");
-    read_from_stream(wifi_file);
-    wifi_file.close();
-  }
-
-  void wifi_manager::add_network(JsonObject object){
-    wifi_config temp(object);
-    wifi_configs.push_back(temp);
-  }   
-
-  void wifi_manager::print_networks(){
+  void wifi_manager_class::print(){
     for(wifi_config i: wifi_configs){
       i.print();
     }
   }
 
-  bool wifi_manager::attempt_connection(){
+  std::string wifi_manager_class::write_to_string(){
+    std::string out;
+    JsonDocument doc;
+    JsonArray doc_wifi = doc["networks"].to<JsonArray>();
+    for(wifi_config i: wifi_configs){
+      doc_wifi.add(i.to_json());
+    }
+    doc.shrinkToFit();
+    serializeJson(doc, out);
+    return out;
+  }
+
+
+  //clean up me!
+  void wifi_manager_class::check_connection(){
+    if(WiFi.status() == WL_CONNECTED){
+      return;
+    }else{
+      if(!attempt_connection()){
+        start_config_ap();
+      }  
+    }
+  }
+
+  //clean up me!
+  bool wifi_manager_class::attempt_connection(){
     retry_count = max_retry_count;
     wifi.clearAPList();
     for(wifi_config current: wifi_configs){
@@ -71,51 +70,36 @@ using namespace task_master;
     return false;
   }
 
-  bool wifi_manager::read_from_stream(Stream &s){
+  void wifi_manager_class::add_network(JsonObject object){
+    wifi_config temp(object);
+    wifi_configs.push_back(temp);
+  }   
+
+
+  bool wifi_manager_class::start_config_ap(){
+    if(!WiFi.beginAP("TaskMaster")){
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+  void wifi_manager_class::read_from_file(){
+    wifi_configs.clear();
+    File wifi_file = LittleFS.open("wifi.json", "r");
     JsonDocument doc;
-    DeserializationError error = deserializeJson(doc, s);
+    DeserializationError error = deserializeJson(doc, wifi_file);
     if(error){
       Serial.print("deserializeJson() failed: ");
       Serial.println(error.c_str());
-      return false;
+      return;
     }else{
       for(JsonObject wifi_json : doc["networks"].as<JsonArray>()) {
         wifi_config w(wifi_json);
         wifi_configs.push_back(w);
       }
     }
-    return true;
+    wifi_file.close();
   }
 
-  std::string wifi_manager::write_to_string(){
-    std::string out;
-    JsonDocument doc;
-    JsonArray doc_wifi = doc["networks"].to<JsonArray>();
-    for(wifi_config i: wifi_configs){
-      doc_wifi.add(i.to_json());
-    }
-    doc.shrinkToFit();
-    serializeJson(doc, out);
-    return out;
-  }
-
-  bool wifi_manager::start_config_ap(){
-    if(!WiFi.beginAP("TaskMaster")){
-      return false;
-    }else{
-      return true;
-    }
-    
-  }
-
-  void wifi_manager::check_connection(){
-    if(WiFi.status() == WL_CONNECTED){
-      return;
-    }else{
-      if(!attempt_connection()){
-        start_config_ap();
-      }  
-    }
-  }
-
-  wifi_manager w_manager;
+  wifi_manager_class wifi_manager;

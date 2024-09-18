@@ -25,9 +25,3 @@ using namespace task_master;
     password = std::string(object["password"]);
 
   }
-
-  //text string constructor
-  wifi_config::wifi_config(const char* s, const char* p){
-    ssid = std::string(s);
-    password = std::string(p);
-  }

@@ -26,7 +26,7 @@ void web_server::tasks_write(){
 
 void web_server::networks_write(){
   recieve_data(dest_networks);
-  w_manager.init(); //restart network manager
+  wifi_manager.init(); //restart network manager
   Serial.println("network list updated");
 }
 

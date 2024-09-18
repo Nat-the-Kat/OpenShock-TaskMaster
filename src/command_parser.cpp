@@ -62,7 +62,7 @@
       config.print();
 
     }else if(strncmp(input.c_str(), "view_networks", 13) == 0){
-      w_manager.print_networks();
+      wifi_manager.print();
 
     }else if(strncmp(input.c_str(), "factory_reset", 13) == 0){
       delete_file("config.json");
@@ -70,7 +70,7 @@
       delete_file("wifi.json");
       config.init();
       task_manager.init();
-      w_manager.init();
+      wifi_manager.init();
 
     }else if(strncmp(input.c_str(), "ip_address", 10) == 0){
       if(WiFi.status() != WL_CONNECTED){

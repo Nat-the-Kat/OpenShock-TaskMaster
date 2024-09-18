@@ -52,6 +52,6 @@ void web_server::tasks_read(){
 }
    
 void web_server::networks_read(){
-  web_server::server.send(200, "application/json", w_manager.write_to_string().c_str());
+  web_server::server.send(200, "application/json", wifi_manager.write_to_string().c_str());
 }
 

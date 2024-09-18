@@ -12,7 +12,6 @@ namespace task_master{
       
       wifi_config();
       wifi_config(JsonObject object);
-      wifi_config(const char* s, const char* p);
   };
 }
 

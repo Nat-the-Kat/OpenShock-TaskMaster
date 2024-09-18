@@ -9,10 +9,6 @@
       public:
         void init();
         void print();
-        
-
-        //task management functions
-        void clear_tasks();
 
         //this one function does all the complicated stuff that i put off until the end.
         //turns outs it wasn't that complicated at all
@@ -21,9 +17,7 @@
         std::string write_to_string();
       private:
         std::vector <task*> task_list;
-        void read_from_stream(Stream &s);
         void read_from_file();
-        void write_to_file();
         void add_task(JsonObject object);
     };
   }
