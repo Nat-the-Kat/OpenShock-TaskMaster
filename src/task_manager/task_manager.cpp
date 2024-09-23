@@ -46,7 +46,7 @@ using namespace task_master;
       }
       //reactivate all tasks
       for(task* t: task_list){
-        t->active = true;
+        t->enable();
       }
     }
     if(config.can_override){

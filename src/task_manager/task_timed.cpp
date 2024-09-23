@@ -1,5 +1,6 @@
 #include "task_manager/task_timed.h"
 #include "config/config.h"
+#include "helpers/time_helper.h"
 
 using namespace task_master;
   void task_timed::print(){
@@ -71,7 +72,7 @@ using namespace task_master;
     tm day;
     localtime_r(&ctime,&day);
     day.tm_hour = 0; day.tm_min = 0; day.tm_sec = 0;
-    time_t start_of_day = mktime(&day);
+    time_t day_start = start_of_day();
 
     name = std::string(object["name"]);
     type = object["type"];
@@ -82,7 +83,7 @@ using namespace task_master;
 
     JsonArray window_array = object["window"];
     temp_window = tod(window_array);
-    window = start_of_day + temp_window.to_time();
+    window = day_start + temp_window.to_time();
 
     can_punish = object["can_punish"];
     can_warn = object["can_warn"];
@@ -92,7 +93,7 @@ using namespace task_master;
       JsonArray punish_array = object["punish_time"];
       
       temp_punish = tod(punish_array);
-      punish_time = start_of_day + temp_punish.to_time();
+      punish_time = day_start + temp_punish.to_time();
       JsonObject task_punish = object["punishment"];
       punish = openshock::control(task_punish);
     }
@@ -100,7 +101,7 @@ using namespace task_master;
     if(can_warn){
       JsonArray warn_array = object["warn_time"];
       temp_warn = tod(warn_array);
-      warn_time = start_of_day + temp_warn.to_time();
+      warn_time = day_start + temp_warn.to_time();
       JsonObject task_warn = object["warning"];
       warning = openshock::control(task_warn);
     }
@@ -113,11 +114,11 @@ using namespace task_master;
 
     //calculate the time window
     if(can_punish && can_warn){  //calculate the window start time from the warning time, note: this assumes the warning comes before the punishment
-      window = temp_warn.to_time() - temp_window.to_time() + start_of_day;
+      window = temp_warn.to_time() - temp_window.to_time() + day_start;
     }else if(can_punish && !can_warn){ //there is no warning, calculate the window start time from the punishment time
-      window = temp_punish.to_time() - temp_window.to_time() + start_of_day;
+      window = temp_punish.to_time() - temp_window.to_time() + day_start;
     }else if(!can_punish && can_warn){
-      window = temp_warn.to_time() - temp_window.to_time() + start_of_day;
+      window = temp_warn.to_time() - temp_window.to_time() + day_start;
     }else{ //if !can_warn and !can_punish, assume the task is garbage and ignore it
       return;
     }

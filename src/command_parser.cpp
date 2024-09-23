@@ -2,6 +2,7 @@
 #include <oled.h>
 #include <pico/stdlib.h>
 #include <tod.h>
+#include <WiFi.h>
 
 #include "command_parser.h"
 #include "config/config.h"
@@ -11,7 +12,8 @@
 #include "task_manager/task_repeating.h"
 #include "wifi_manager/wifi_manager.h"
 
-#include <wifiz.h> 
+
+//#include <wifiz.h> 
 
 #define version_string "v0.2.0"
 
@@ -32,8 +34,8 @@
       delete_file(input);
 
     }else if(strncmp(input.c_str(), "fsinfo", 6) == 0){
-      FSInfo64 fsinfo;
-      LittleFS.info64(fsinfo);
+      FSInfo fsinfo;
+      LittleFS.info(fsinfo);
       char buffer[128];
       sprintf(buffer, "fs info:\ntotalBytes: %ld\nusedBytes: %ld\nblockSize: %d\npageSize: %d\nmaxOpenFiles: %d\nmaxPathLength: %d", fsinfo.totalBytes, fsinfo.usedBytes, fsinfo.blockSize, fsinfo.pageSize, fsinfo.maxOpenFiles, fsinfo.maxPathLength);
       Serial.println(buffer);

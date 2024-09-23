@@ -1,5 +1,6 @@
 #include "task_manager/task_repeating.h"
 #include "config/config.h"
+#include "helpers/time_helper.h"
 
 using namespace task_master;
 
@@ -118,14 +119,11 @@ using namespace task_master;
     
     //calculate the start of the day
     time_t ctime = time(nullptr);
-    tm day;
-    localtime_r(&ctime,&day);
-    day.tm_hour = 0; day.tm_min = 0; day.tm_sec = 0;
-    time_t start_of_day = mktime(&day);
+    time_t day_start = start_of_day();
 
     //calculate all the initial times
-    start = start_of_day + start;
-    end = start_of_day + end;
+    start = day_start + start;
+    end = day_start + end;
     interval = interval;
     time_t prev_end = end - 86400;
     time_t prev_start = start - 86400;
@@ -217,11 +215,7 @@ using namespace task_master;
     active = true;
     interval_active = true;
   }
-
-  void task_repeat::print_times(){
-    
-  }
-
+  
   void task_repeat::calc_next_time(){
       time_t ctime = time(nullptr);
       //loop thru and find the next interval start

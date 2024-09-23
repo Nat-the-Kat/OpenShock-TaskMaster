@@ -23,7 +23,6 @@ namespace task_master{
       bool interval_active = true;
 
       void calc_next_time();
-      void print_times();
 
 
   };
